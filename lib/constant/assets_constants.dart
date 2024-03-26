@@ -4,7 +4,7 @@ static const String iconPath = "assets/images/bottomIcon";
 static const String mandobIcon = "$iconPath/mandob.png";
 static const String tagerIcon = "$iconPath/tager.png";
 
-static const String googleIcon = "$iconPath/google.webp";
+static const String googleIcon = "$iconPath/google.png";
 static const String likeOutlinedIcon = "$iconPath/heart.png";
 static const String likeFilledIcon = "$iconPath/heartliked.png";
 static const String bookmarkOutlinedIcon = "$iconPath/bookmark.png";

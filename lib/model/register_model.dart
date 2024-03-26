@@ -1,26 +1,45 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Register {
-  String? username;
+  String? displayName;
   String? email;
-  String? userId;
+  String? uid;
+  String? photoURL;
+  Timestamp? lastOnline;
+  Timestamp? createdAt;
+  List<dynamic>? interest;
 
-  Register(
-      {this.username,
-      this.email,
-      this.userId});
+  Register({
+    this.displayName,
+    this.email,
+    this.uid,
+    this.photoURL,
+    this.lastOnline,
+    this.createdAt,
+    this.interest,
+  });
 
-  factory Register.fromFireStore(Map<String, dynamic> json) {
+  factory Register.fromFirestore(Map<String, dynamic> json) {
     return Register(
-      username: json['username'],
+      displayName: json['displayName'],
       email: json['email'],
-      userId: json['userId'],
+      uid: json['uid'],
+      photoURL: json['photoURL'],
+      lastOnline: json['lastOnline'],
+      createdAt: json['createdAt'],
+      interest: json['interest'],
     );
   }
 
-  Map<String, dynamic> toFireStore() {
+  Map<String, dynamic> toFirestore() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['username'] = username;
+    data['displayName'] = displayName;
     data['email'] = email;
-    data['userId'] = userId;
+    data['uid'] = uid;
+    data['photoURL'] = photoURL;
+    data['lastOnline'] = lastOnline;
+    data['createdAt'] = createdAt;
+    data['interest'] = interest;
 
     return data;
   }

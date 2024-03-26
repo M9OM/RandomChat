@@ -1,18 +1,29 @@
+import 'package:chatme/provider/DarktModeProvider.dart';
 import 'package:chatme/provider/providerauth.dart';
+import 'package:chatme/screens/registration/register_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '/screens/SplashScreen/splash_screen.dart';
-import '/screens/chatList/chatList.dart';
-import '/screens/chat_screen/chat_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-import 'screens/homeScreen.dart';
+import 'screens/ChangeScreens.dart';
+import 'screens/SplashScreen/splash_screen.dart';
+import 'screens/profileSetup/profile_bio_setup.dart';
+import 'ui/color.dart';
+
+Future check(context) async {
+  await Future.delayed(const Duration(seconds: 3), () {});
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const MyApp());
+
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(const MyApp());
+  });
 }
 
 class MyApp extends StatefulWidget {
@@ -24,10 +35,17 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  User? user; // Declare user without initialization
-
+  User? user;
+  bool isSign = false;
+  String userID = '';
+  bool loading = true;
   @override
   void initState() {
+    Future.delayed(const Duration(seconds: 3), () {
+      setState(() {
+        loading = false;
+      });
+    });
     super.initState();
     user = FirebaseAuth.instance.currentUser;
 
@@ -35,25 +53,35 @@ class _MyAppState extends State<MyApp> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<ModelsProvider>(
-      // Specify the type of provider
-      create: (_) => ModelsProvider()..setCurrentModel(user!.uid), // Initialize
-      child: MaterialApp(
-        themeMode: ThemeMode.dark,
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData.dark().copyWith(
-          textTheme: const TextTheme(
-            bodyText1: TextStyle(
-                color: Colors.white,
-                fontFamily: 'Orbitron'), // Set body text color to black
-            bodyText2: TextStyle(color: Colors.white, fontFamily: 'Orbitron'),
-            // Set body text color to black
-            // Add more text styles here as needed
-          ),
-        ),
-        home: user == null ? const SplashScreen() : const homeScreen(),
-      ),
-    );
+    return StreamBuilder<Object>(
+        stream: null,
+        builder: (context, snapshot) {
+          return MultiProvider(
+            providers: [
+              ChangeNotifierProvider<ModelsProvider>(
+                create: (_) =>
+                    ModelsProvider()..setCurrentModel(user?.uid ?? ''),
+              ),
+              ChangeNotifierProvider<DarktModeProvider>(
+                create: (_) => DarktModeProvider()..loadDarkMode(),
+              ),
+            ],
+            child: Consumer<DarktModeProvider>(
+              builder: (context, darkModeNotifier, _) {
+                return MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  theme: darkModeNotifier.isDarkMode ? darkMode : lightMode,
+                  home: loading
+                      ? const SplashScreen()
+                      : user==null
+                          ? const register_screen()
+                          : const ChangeScreen(),
+                );
+              },
+            ),
+          );
+        });
   }
 }

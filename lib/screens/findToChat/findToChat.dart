@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:chatme/screens/SplashScreen/splash_screen.dart';
 import 'package:chatme/screens/chatList/chatList.dart';
 import 'package:chatme/screens/chat_screen/chat_screen.dart';
 import 'package:chatme/screens/findToChat/loading.dart';
@@ -72,6 +71,8 @@ class _FindToChatState extends State<FindToChat> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return ModalProgressHUD(
       inAsyncCall: searching,
       progressIndicator: const LoadingUsers(),
@@ -88,14 +89,15 @@ class _FindToChatState extends State<FindToChat> {
             if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
               return const Text('No users available');
             }
+
             var users = snapshot.data!.docs;
+            // ignore: list_remove_unrelated_type
 
             return Center(
                 child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-
                 const SizedBox(
                   height: 20,
                 ),
@@ -106,61 +108,101 @@ class _FindToChatState extends State<FindToChat> {
                         return const Text('No users available');
                       }
 
-                      var tringTime = snapshot.data;
+                      var tringTime = 0;
+                      if (!snapshot.data!.exists) {
+                        tringTime = 0;
+                      } else {
+                        tringTime = snapshot.data!['trying'];
+                      }
 
                       return InkWell(
                         onTap: () async {
-                          if (tringTime['trying'] < 5) {
-                            tringTimes(tringTime['trying'] + 1, user!.uid);
 
-                            searching = true;
-                            Random random = Random();
-                            int randomNumber = random.nextInt(users.length);
+                          bool loop =true;
+                          while (loop) {
+                            if (tringTime < 11) {
+                              tringTimes(tringTime + 1, user!.uid);
 
-                            print(
-                                'roomId before Future.delayed: $roomId'); // Check if null before delay
-                            await Future.delayed(
-                                const Duration(milliseconds: 7000), () async {
-                              setState(() {
-                                roomId =
-                                    '${DateTime.now().microsecondsSinceEpoch}${DateTime.now().millisecond}';
-                              });
-                              print('roomId after assignment: $roomId');
-                              print(users[randomNumber]['uid']);
-                              // Check if assigned correctly
-                              createRoom(roomId, user?.uid ?? '',
-                                  users[randomNumber]['uid']);
-                              setState(() {
-                                senderId = users[randomNumber]['uid'];
-                              });
-                              if (roomId != null) {
-                                await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ChatScreen(
-                                            roomId: roomId,
-                                            ontherId: users[randomNumber]
-                                                ['uid'])));
-                              }
-                              searching = false;
+                              searching = true;
+                              Random random = Random();
+                              int randomNumber = random.nextInt(users.length);
+
+                              print(
+                                  'roomId before Future.delayed: $roomId'); // Check if null before delay
+                              await Future.delayed(
+                                  const Duration(milliseconds: 7000), () async {
+                                setState(() {
+                                  roomId =
+                                      '${DateTime.now().microsecondsSinceEpoch}${DateTime.now().millisecond}';
+                                });
+                                print('roomId after assignment: $roomId');
+                                print(users[randomNumber]['uid']);
+                                if (users[randomNumber]['uid'] == user!.uid) {
+                                  loop=true;
+                                }else{
+                                  loop =false;
+
+                                createRoom(roomId, user?.uid ?? '',
+                                    users[randomNumber]['uid']);
+                                setState(() {
+                                  senderId = users[randomNumber]['uid'];
+                                });
+                                Timestamp lastOnlineTimestamp =
+                                    users[randomNumber]['lastOnline'];
+                                DateTime lastOnlineDateTime =
+                                    lastOnlineTimestamp.toDate();
+
+                                bool isOnline = DateTime.now()
+                                        .difference(lastOnlineDateTime) <
+                                    Duration(minutes: 5);
+
+                                print(
+                                    '$isOnline ${DateTime.now().difference(lastOnlineDateTime)}');
+
+                                if (roomId != null) {
+                                  
+                                  await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ChatScreen(
+                                            group: false,
+                                                roomId: roomId,
+                                                ontherId: users[randomNumber]
+                                                    ['uid'],
+                                                name: users[randomNumber]
+                                                    ['displayName'],
+                                                pohtoURL: users[randomNumber]
+                                                    ['photoURL'],
+                                                online: isOnline,
+                                              )));
+                                }
+                                searching = false;
+
+
+
+                            }
+                            
+                            
                             });
-                          } else {
-                            await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const PaymentScreen()));
+                            } else {
+                              await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const PaymentScreen()));
+                            }
                           }
                         },
                         child: Container(
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
-                            color: mainColor,
+                            color: theme.primaryColor,
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Column(
                             children: [
                               const Text('Start Chatting!'),
-                              Text('${tringTime!['trying']}/5'),
+                              Text('${tringTime}/5'),
                             ],
                           ),
                         ),

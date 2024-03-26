@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter/widgets.dart';
-
 import 'package:flutter/material.dart';
-
 import '../../../../ui/color.dart';
-import 'color/color.dart';
 
 class Buble extends StatelessWidget {
   const Buble({
@@ -14,15 +11,18 @@ class Buble extends StatelessWidget {
     required this.isMe,
     required this.text,
     required this.profileUrlOther,
+    required this.name,
   }) : super(key: key);
 
   final bool isMe;
   final String text;
   final String profileUrlOther;
+  final String name;
 
-  
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Padding(
       padding: const EdgeInsets.all(5.0),
       //ur buble
@@ -34,13 +34,11 @@ class Buble extends StatelessWidget {
               ? Container(
                   padding: padding,
                   decoration: BoxDecoration(
-                    color: meColor,
+                    color: theme.cardColor,
                     borderRadius: borderRadiusMe,
                   ),
                   child: Column(
                     children: [
-
-
                       Text(text),
                     ],
                   ),
@@ -68,7 +66,7 @@ class Buble extends StatelessWidget {
                           image: DecorationImage(
                               image: AssetImage('assets/image/8.gif'),
                               fit: BoxFit.cover),
-                          color: mainColor,
+                          color: theme.primaryColor,
                           borderRadius: borderRadiusOther,
                         ),
                         child: Text(text),

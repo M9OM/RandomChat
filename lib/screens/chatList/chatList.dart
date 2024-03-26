@@ -1,4 +1,6 @@
+import 'package:chatme/constant/assets_constants.dart';
 import 'package:chatme/services/auth.dart';
+import 'package:chatme/ui/color.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,153 +12,242 @@ import '/services/firebaseService.dart';
 class ChatList extends StatelessWidget {
   ChatList();
 
-  late Stream<QuerySnapshot> getList;
-
   @override
   Widget build(BuildContext context) {
-    final postProvider = Provider.of<ModelsProvider>(context);
+    final postProvider = Provider.of<ModelsProvider>(context, listen: false);
+    final theme = Theme.of(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Your List'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              AuthService().signOut();
-            },
-            icon: Icon(Icons.logout),
-          ),
-        ],
-      ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: getListUsersChat(postProvider.usersId, postProvider.usersId),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            print(snapshot.error);
-            return Text('Error: ${snapshot.error}');
-          }
+    return FutureBuilder<Map<String, Map<String, dynamic>>>(
+      future: preloadUserData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
 
-          var chatUsers = snapshot.data!.docs;
-          return ListView.builder(
-            itemCount: chatUsers.length,
-            itemBuilder: (context, index) {
-              var document = chatUsers[index];
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChatScreen(
-                        roomId: document.id.toString(),
-                        ontherId: postProvider.usersId ==
-                                document['userId'][0].toString()
-                            ? document['userId'][1].toString()
-                            : document['userId'][0].toString(),
+        Map<String, Map<String, dynamic>> userDataMap = snapshot.data!;
+
+        return Container(
+          child: StreamBuilder<QuerySnapshot>(
+            stream:
+                getListUsersChat(postProvider.usersId, postProvider.usersId),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              }
+
+              var chatUsers = snapshot.data!.docs;
+
+              if (chatUsers.isEmpty) {
+                return const Center(
+                  child: Text('No chat users found.'),
+                );
+              }
+
+              return ListView.builder(
+                itemCount: chatUsers.length,
+                itemBuilder: (context, index) {
+                  var document = chatUsers[index];
+                  var userIds = document['userId'] as List<dynamic>;
+                  var documentData = document.data() as Map<String, dynamic>;
+
+                  var nameOfGroup = documentData.containsKey('NameOfGroup')
+                      ? documentData['NameOfGroup']
+                      : '';
+                  var otherUserId = userIds.firstWhere(
+                      (id) => id != postProvider.usersId,
+                      orElse: () => '');
+
+                  if (otherUserId.isEmpty) {
+                    return const SizedBox(); // Skip rendering if otherUserId is empty
+                  }
+
+                  // Get user data from preloaded map
+                  var userData = userDataMap[otherUserId];
+
+                  if (userData == null) {
+                    return const SizedBox(); // Skip rendering if userData is null
+                  }
+                  if (nameOfGroup != '') {
+                    return GestureDetector(
+                    onTap: () {
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChatScreen(
+                            roomId: document.id.toString(),
+                            ontherId: otherUserId,
+                            membres:userIds,
+                            group:true,
+                            name: chatUsers[index]['NameOfGroup'],
+                            pohtoURL: '',
+                            online: true,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            width: 1,
+                            color: theme.cardColor,
+                          ),
+                        ),
+                      ),
+                      child: ListTile(
+                        trailing: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: theme.primaryColor,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Text(
+                            'G',
+                            style: TextStyle(fontSize: 10),
+                          ),
+                        ),
+                        title: Text(
+                          chatUsers[index]['NameOfGroup'] ?? 'Unknown',
+                        ),
+                        leading:  CircleAvatar(
+                          radius: 25,
+                          backgroundColor: theme.primaryColor,
+                          child:Text('G',style: TextStyle(
+                            
+                            fontWeight:  FontWeight.bold,
+                            color: theme.cardColor,fontSize: 40),)
+                         ,
+                        ),
+                        subtitle: StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('rooms/${document.id}/messages')
+                              .orderBy('timestamp', descending: true)
+                              .limit(1)
+                              .snapshots(),
+                          builder: (context, messageSnapshot) {
+                            if (messageSnapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Text('...');
+                            }
+                            if (messageSnapshot.hasError) {
+                              return Text('Error: ${messageSnapshot.error}');
+                            }
+                            var messages = messageSnapshot.data!.docs;
+                            if (messages.isNotEmpty) {
+                              var lastMessage = messages.last;
+                              return Text(lastMessage['text']);
+                            }
+                            return const SizedBox();
+                          },
+                        ),
+                      ),
+                    ),
+                  );
+                  }
+
+                  return GestureDetector(
+                    onTap: () {
+                      Timestamp lastOnlineTimestamp = userData['lastOnline'];
+                      DateTime lastOnlineDateTime =
+                          lastOnlineTimestamp.toDate();
+
+                      bool isOnline =
+                          DateTime.now().difference(lastOnlineDateTime) <
+                              const Duration(minutes: 5);
+
+                      print(
+                          '$isOnline ${DateTime.now().difference(lastOnlineDateTime)}');
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChatScreen(
+                            roomId: document.id.toString(),
+                            ontherId: otherUserId,
+                            name: userData['displayName'],
+                            pohtoURL: userData['photoURL'],
+                            online: isOnline, group: false,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            width: 1,
+                            color: theme.cardColor,
+                          ),
+                        ),
+                      ),
+                      child: ListTile(
+                        trailing: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: theme.primaryColor,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Text(
+                            '1',
+                            style: TextStyle(fontSize: 10),
+                          ),
+                        ),
+                        title: Text(
+                          userData['displayName'] ?? 'Unknown',
+                        ),
+                        leading: CircleAvatar(
+                          radius: 25,
+                          backgroundImage:
+                              NetworkImage(userData['photoURL'] ?? ''),
+                        ),
+                        // subtitle: StreamBuilder<QuerySnapshot>(
+                        //   stream: FirebaseFirestore.instance
+                        //       .collection('rooms/${document.id}/messages')
+                        //       .orderBy('timestamp', descending: true)
+                        //       .limit(1)
+                        //       .snapshots(),
+                        //   builder: (context, messageSnapshot) {
+                        //     if (messageSnapshot.connectionState ==
+                        //         ConnectionState.waiting) {
+                        //       return const Text('...');
+                        //     }
+                        //     if (messageSnapshot.hasError) {
+                        //       return Text('Error: ${messageSnapshot.error}');
+                        //     }
+                        //     var messages = messageSnapshot.data!.docs;
+                        //     if (messages.isNotEmpty) {
+                        //       var lastMessage = messages.last;
+                        //       return Text(lastMessage['text']);
+                        //     }
+                        //     return const SizedBox();
+                        //   },
+                        // ),
                       ),
                     ),
                   );
                 },
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        color: Color.fromARGB(255, 85, 85, 85),
-                      ),
-                    ),
-                  ),
-                  child: ListTile(
-                    title: FutureBuilder<DocumentSnapshot>(
-                      future: FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(postProvider.usersId ==
-                                  document['userId'][0].toString()
-                              ? document['userId'][1].toString()
-                              : document['userId'][0].toString())
-                          .get(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Text(
-                              'Loading...'); // Placeholder text while data is being fetched
-                        }
-                        if (snapshot.hasError) {
-                          return Text(
-                              'Error: ${snapshot.error}'); // Display error message if there's an error
-                        }
-                        var userData = snapshot.data!.data() as Map<String,
-                            dynamic>?; // Explicit cast to Map<String, dynamic>?
-                        var displayName = userData?['displayName'] ?? 'Unknown';
-// Extract displayName from document data
-                        return Text(
-                            displayName.toString()); // Display the displayName
-                      },
-                    ),
-
-// var profileUrl = userData?['profileURL'] ?? 'Unknown';
-
-                    leading: FutureBuilder<DocumentSnapshot>(
-                        future: FirebaseFirestore.instance
-                            .collection('users')
-                            .doc(postProvider.usersId ==
-                                    document['userId'][0].toString()
-                                ? document['userId'][1].toString()
-                                : document['userId'][0].toString())
-                            .get(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return CircleAvatar(
-                              radius: 25,
-                              backgroundImage: NetworkImage(''),
-                            ); // Placeholder text while data is being fetched
-                          }
-                          if (snapshot.hasError) {
-                            return Text(
-                                'Error: ${snapshot.error}'); // Display error message if there's an error
-                          }
-                          var userData = snapshot.data!.data() as Map<String,
-                              dynamic>?; // Explicit cast to Map<String, dynamic>?
-                          var profileURL = userData?['photoURL'] ?? 'Unknown';
-
-                          return CircleAvatar(
-                            radius: 25,
-                            backgroundImage: NetworkImage(profileURL),
-                          );
-                        }),
-                    subtitle: StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('rooms/${document.id}/messages')
-                          .orderBy('timestamp', descending: true)
-                          .limit(1)
-                          .snapshots(),
-                      builder: (context, messageSnapshot) {
-                        if (messageSnapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Text(
-                              '...'); // Show loading indicator while data is being fetched
-                        }
-                        if (messageSnapshot.hasError) {
-                          return Text('Error: ${messageSnapshot.error}');
-                        }
-                        var messages = messageSnapshot.data!.docs;
-                        if (messages.isNotEmpty) {
-                          var lastMessage = messages.last;
-                          return Text(lastMessage[
-                              'text']); // Display the last message in the list tile
-                        }
-                        return SizedBox(); // Return an empty space if there are no messages
-                      },
-                    ),
-                  ),
-                ),
               );
             },
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
+  }
+
+  Future<Map<String, Map<String, dynamic>>> preloadUserData() async {
+    Map<String, Map<String, dynamic>> userDataMap = {};
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('users').get();
+    querySnapshot.docs.forEach((doc) {
+      userDataMap[doc.id] = doc.data() as Map<String, dynamic>;
+    });
+    return userDataMap;
   }
 }

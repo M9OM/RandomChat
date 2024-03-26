@@ -1,23 +1,37 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lottie/lottie.dart';
 import 'package:audioplayers/audioplayers.dart';
+import '../../provider/providerauth.dart';
 import '../../ui/color.dart';
 import '/screens/chat_screen/widget/dilog.dart';
 import '../../services/firebaseService.dart';
+import 'widget/appbar.dart';
 import 'widget/buble/buble.dart';
-import 'widget/buble/color/color.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ChatScreen extends StatefulWidget {
   final String roomId;
   final String ontherId;
-
-  const ChatScreen({Key? key, required this.roomId, required this.ontherId})
+  final String name;
+  final String pohtoURL;
+  final bool online;
+  final List? membres;
+  final bool group;
+  const ChatScreen(
+      {Key? key,
+      required this.roomId,
+      required this.name,
+      required this.online,
+      required this.pohtoURL,
+      required this.ontherId,
+      this.membres, required this.group})
       : super(key: key);
 
   @override
@@ -49,6 +63,8 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   late Future<DocumentSnapshot> userDataFuture;
+    late Future<Map<String, Map<String, dynamic>>> getUserDataa;
+
   late Stream<QuerySnapshot> chatSnapshotStream;
   String profileURLOtherUser = '';
   Future<void> _fetchData() async {
@@ -70,6 +86,12 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     user = FirebaseAuth.instance.currentUser!;
+getUserDataa = preloadUserData();
+    lastOnline(user.uid);
+    Timer.periodic(const Duration(minutes: 2), (timer) {
+      lastOnline(user.uid);
+    });
+
     userDataFuture = getUserData(widget.ontherId);
 
     chatSnapshotStream = getMessages(widget.roomId);
@@ -104,279 +126,237 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final userAdmin = Provider.of<ModelsProvider>(context);
+
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage(
-                  'assets/images/bakcround$themeChat.gif',
-                ),
-                fit: BoxFit.cover,
-                colorFilter: const ColorFilter.mode(
-                    Color.fromARGB(169, 0, 0, 0), BlendMode.darken))),
-        child: GestureDetector(
-          onLongPress: () {
-            blackTheme() {
-              setState(() {
-                themeChat = '1';
-              });
-            }
+      body: FutureBuilder<Map<String, Map<String, dynamic>>>(
+      future: getUserDataa,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
 
-            blueTheme() {
-              setState(() {
-                themeChat = '2';
-              });
-            }
+        Map<String, Map<String, dynamic>> userDataMap = snapshot.data!;
+          return Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage(
+                      'assets/images/bakcround$themeChat.gif',
+                    ),
+                    fit: BoxFit.cover,
+                    colorFilter: const ColorFilter.mode(
+                        Color.fromARGB(169, 0, 0, 0), BlendMode.darken))),
+            child: GestureDetector(
+              onLongPress: () {
+                blackTheme() {
+                  setState(() {
+                    themeChat = '1';
+                  });
+                }
+      
+                blueTheme() {
+                  setState(() {
+                    themeChat = '2';
+                  });
+                }
+      
+                redTheme() {
+                  setState(() {
+                    themeChat = '3';
+                  });
+                }
+      
+                Dilog().dialogBuilder(context, blackTheme, blueTheme, redTheme);
+              },
+              onTap: () {
+                FocusScopeNode currentFocus = FocusScope.of(context);
+                if (!currentFocus.hasPrimaryFocus) {
+                  currentFocus.unfocus();
+                }
+              },
+              child: Column(
+                children: <Widget>[
+                  AppbarMsg(
+                      pohtoURL: widget.pohtoURL,
+                      online: widget.online,
+                      name: widget.name,
+                      group:widget.group,
+                      ontherID:widget.ontherId,
+                      membres: widget.membres ?? []                  
+                      ),
+      
+                  Expanded(
+                      child: StreamBuilder<QuerySnapshot>(
+                    stream: chatSnapshotStream,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      }
+                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                        return const Center(child: Text('No messages'));
+                      }
+      
+                      var messages = snapshot.data!.docs;
+      
+                      // Detect if new messages have arrived
+                      if (_listKey.currentState != null &&
+                          _listKey.currentState!.widget.initialItemCount !=
+                              messages.length) {
+                        final newIndex = messages.length -
+                            _listKey.currentState!.widget.initialItemCount;
+                        _listKey.currentState!.insertItem(newIndex);
+                      }
 
-            redTheme() {
-              setState(() {
-                themeChat = '3';
-              });
-            }
+                      return AnimatedList(
+                        reverse: true,
+                        key: _listKey,
+                        controller: _listScrollController,
+                        initialItemCount: messages.length,
+                        itemBuilder: (context, index, animation) {
+                          final reversedIndex = messages.length - 1 - index;
+                           var userData = userDataMap[messages[reversedIndex]['userId']];
 
-            Dilog().dialogBuilder(context, blackTheme, blueTheme, redTheme);
-          },
-          onTap: () {
-            FocusScopeNode currentFocus = FocusScope.of(context);
-            if (!currentFocus.hasPrimaryFocus) {
-              currentFocus.unfocus();
-            }
-          },
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: FutureBuilder<DocumentSnapshot>(
-                  future: userDataFuture,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            const SizedBox(
-                              height: 40,
+                          return SizeTransition(
+                            sizeFactor: animation,
+                            axis: Axis.vertical,
+                            child: Buble(
+                              text: messages[reversedIndex]['text'],
+                              isMe: user.uid == messages[reversedIndex]['userId'],
+                              profileUrlOther: userData!['photoURL'],
+                              name: userData!['displayName'],
+                              
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                InkWell(
-                                  child: const Icon(
-                                      Icons.arrow_back_ios_new_sharp),
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                CircleAvatar(
-                                  radius: 20,
-                                  backgroundColor: Colors.grey[900],
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                const Text('...'),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ); // Show a loading indicator while waiting for data
-                    }
-                    if (!snapshot.hasData) {
-                      return const Text(
-                          'No data available'); // Handle the case when there is no data
-                    }
-                    final userData = snapshot.data;
-                    if (userData != null) {
-                      final photoURL = userData['photoURL'].toString();
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            const SizedBox(
-                              height: 40,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Icon(
-                                      Icons.arrow_back_ios_new_sharp),
-                                ),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                CircleAvatar(
-                                  radius: 20,
-                                  backgroundImage: NetworkImage(photoURL),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Text(userData['displayName']),
-                              ],
-                            ),
-                          ],
-                        ),
-                      );
-                    } else {
-                      return const Text(
-                          'User data is null'); // Handle the case when user data is null
-                    }
-                  },
-                ),
-              ),
-              Expanded(
-                  child: StreamBuilder<QuerySnapshot>(
-                stream: chatSnapshotStream,
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  }
-                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return const Center(child: Text('No messages'));
-                  }
-
-                  var messages = snapshot.data!.docs;
-
-
-                  // Detect if new messages have arrived
-                  if (_listKey.currentState != null &&
-                      _listKey.currentState!.widget.initialItemCount !=
-                          messages.length) {
-                    final newIndex = messages.length -
-                        _listKey.currentState!.widget.initialItemCount;
-                    _listKey.currentState!.insertItem(newIndex);
-                  }
-
-                  return AnimatedList(
-                    reverse: true,
-                    key: _listKey,
-                    controller: _listScrollController,
-                    initialItemCount: messages.length,
-                    itemBuilder: (context, index, animation) {
-                      final reversedIndex = messages.length - 1 - index;
-                      return SizeTransition(
-                        sizeFactor: animation,
-                        axis: Axis.vertical,
-                        child: Buble(
-                          text: messages[reversedIndex]['text'],
-                          isMe: user.uid == messages[reversedIndex]['userId'],
-                          profileUrlOther: profileURLOtherUser,
-                        ),
+                          );
+                        },
                       );
                     },
-                  );
-                },
-              )),
-              //piked image
-              if (pickedFileto != null)
-                Stack(
-                  alignment: AlignmentDirectional.topEnd,
-                  children: [
-                    ConstrainedBox(
-                      constraints:
-                          BoxConstraints(maxWidth: 200, minHeight: 100),
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Image.file(pickedFileto!)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: InkWell(
-                          onTap: () {
-                            setState(() {
-                              pickedFileto = null;
-                            });
-                          },
-                          child: Icon(
-                            Icons.cancel_outlined,
-                            size: 30,
-                            color: Colors.white,
-                            shadows: [Shadow(offset: Offset(2, 2))],
-                          )),
-                    )
-                  ],
-                ),
-              Padding(
-                padding: const EdgeInsets.all(25.0),
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: TextField(
-                        maxLines: 4,
-                        minLines: 1,
-                        style: const TextStyle(
-                            color: Colors.white, fontFamily: 'Orbitron'),
-                        controller: _textController,
-                        decoration: InputDecoration(
-                          hintText: 'Type your message...',
-                          focusedBorder: OutlineInputBorder(
+                  )),
+                  //piked image
+                  if (pickedFileto != null)
+                    Stack(
+                      alignment: AlignmentDirectional.topEnd,
+                      children: [
+                        ConstrainedBox(
+                          constraints:
+                              const BoxConstraints(maxWidth: 200, minHeight: 100),
+                          child: ClipRRect(
                               borderRadius: BorderRadius.circular(20),
-                              borderSide: BorderSide(
-                                color: mainColor,
+                              child: Image.file(pickedFileto!)),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  pickedFileto = null;
+                                });
+                              },
+                              child: const Icon(
+                                Icons.cancel_outlined,
+                                size: 30,
+                                shadows: [Shadow(offset: Offset(2, 2))],
                               )),
-                          hintStyle: const TextStyle(
-                              color: Colors.white, fontFamily: 'Orbitron'),
-                          filled: true,
-                          fillColor: Colors.transparent,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: const BorderSide(
-                              color: Colors.indigoAccent,
-                              width: 2,
+                        )
+                      ],
+                    ),
+                  Padding(
+                    padding: const EdgeInsets.all(25.0),
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: TextField(
+                            maxLines: 4,
+                            minLines: 1,
+                            style: const TextStyle(fontFamily: 'Orbitron'),
+                            controller: _textController,
+                            decoration: InputDecoration(
+                              hintText: 'Type your message...',
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20),
+                                borderSide: const BorderSide(
+                                  color: Color.fromARGB(255, 93, 93, 93),
+                                  width: 2,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                  borderSide: BorderSide(
+                                    color: theme.primaryColor,
+                                  )),
+                              hintStyle: const TextStyle(fontFamily: 'Orbitron'),
+                              filled: true,
+                              fillColor: Colors.transparent,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: const BorderSide(
+                                  color: Colors.indigoAccent,
+                                  width: 2,
+                                ),
+                              ),
+                              suffixIcon: InkWell(
+                                  onTap: () {
+                                    playSound();
+      
+                                    lastMessage(widget.roomId);
+                                    if (_textController.text.isNotEmpty) {
+                                      sendMessage(widget.roomId,
+                                          _textController.text, userAdmin.usersId);
+      
+                                      _textController.clear();
+                                      scrollListToEND();
+                                    }
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(9),
+                                      decoration: BoxDecoration(
+                                          color: theme.primaryColor,
+                                          shape: BoxShape.circle),
+                                      child: Image.asset(
+                                        'assets/images/send.png',
+                                        width: 25,
+                                        color: theme.iconTheme.color,
+                                      ),
+                                    ),
+                                  )),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(width: 8.0),
-                    Row(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            pickImage();
-                          },
-                          child: Image.asset(
-                            'assets/images/images.png',
-                            width: 30,
-                            color: iconColor,
-                          ),
+                        // const SizedBox(width: 8.0),
+                        Row(
+                          children: [
+                            // InkWell(
+                            //   onTap: () {
+                            //     pickImage();
+                            //   },
+                            //   child: Container(
+                            //       padding: const EdgeInsets.all(9),
+                            //       decoration: const BoxDecoration(color: Colors.deepPurple, shape: BoxShape.circle),
+                            //     child: Image.asset(
+                            //       'assets/images/images.png',
+                            //       width: 25,
+                            //       color: iconColor,
+                            //     ),
+                            //   ),
+                            // ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                          ],
                         ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        InkWell(
-                            onTap: () {
-                              playSound();
-
-                              lastMessage(widget.roomId);
-                              if (_textController.text.isNotEmpty) {
-                                sendMessage(widget.roomId, _textController.text,
-                                    user.uid);
-
-                                _textController.clear();
-                                scrollListToEND();
-                              }
-                            },
-                            child: Image.asset(
-                              'assets/images/send.png',
-                              width: 30,
-                              color: iconColor,
-                            )),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        }
       ),
     );
   }
@@ -392,4 +372,14 @@ class _ChatScreenState extends State<ChatScreen> {
       curve: Curves.easeOut,
     );
   }
+    Future<Map<String, Map<String, dynamic>>> preloadUserData() async {
+    Map<String, Map<String, dynamic>> userDataMap = {};
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('users').get();
+    querySnapshot.docs.forEach((doc) {
+      userDataMap[doc.id] = doc.data() as Map<String, dynamic>;
+    });
+    return userDataMap;
+  }
+
 }

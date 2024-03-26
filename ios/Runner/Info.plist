@@ -2,6 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleURLTypes</key>
+<array>
+    <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+            <string>com.googleusercontent.apps.1094637856098-brv33kjl1mvq79773k358k27kavhldps</string>
+        </array>
+    </dict>
+</array>
+
 	<key>NSPhotoLibraryUsageDescription</key>
 <string>We need access to your photo library to pick an image.</string>
 
