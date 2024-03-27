@@ -49,19 +49,7 @@ class _FindToChatState extends State<FindToChat> {
     _userStream = getListUsers();
 
     int i = 0;
-    Timer.periodic(const Duration(microseconds: 300000), (timer) {
-      setState(() {
-        imageIndex++;
-        nameIndex++;
 
-        if (imageIndex == image.length) {
-          imageIndex = 0;
-        }
-        if (nameIndex == name.length) {
-          nameIndex = 0;
-        }
-      });
-    });
   }
 
   void dispose() {
@@ -118,12 +106,15 @@ class _FindToChatState extends State<FindToChat> {
                       return InkWell(
                         onTap: () async {
 
+                          setState(() {
+                                               searching = true;
+
+                          });
+
                           bool loop =true;
                           while (loop) {
-                            if (tringTime < 11) {
+                            if (tringTime < 120) {
                               tringTimes(tringTime + 1, user!.uid);
-
-                              searching = true;
                               Random random = Random();
                               int randomNumber = random.nextInt(users.length);
 
@@ -156,6 +147,8 @@ class _FindToChatState extends State<FindToChat> {
                                         .difference(lastOnlineDateTime) <
                                     Duration(minutes: 5);
 
+
+
                                 print(
                                     '$isOnline ${DateTime.now().difference(lastOnlineDateTime)}');
 
@@ -176,7 +169,10 @@ class _FindToChatState extends State<FindToChat> {
                                                 online: isOnline,
                                               )));
                                 }
-                                searching = false;
+setState(() {
+                                  searching = false;
+
+});
 
 
 

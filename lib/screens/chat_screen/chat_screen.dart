@@ -208,7 +208,7 @@ getUserDataa = preloadUserData();
                               messages.length) {
                         final newIndex = messages.length -
                             _listKey.currentState!.widget.initialItemCount;
-                        _listKey.currentState!.insertItem(newIndex);
+                        _listKey.currentState!.insertItem(newIndex-1);
                       }
 
                       return AnimatedList(
@@ -227,7 +227,7 @@ getUserDataa = preloadUserData();
                               text: messages[reversedIndex]['text'],
                               isMe: user.uid == messages[reversedIndex]['userId'],
                               profileUrlOther: userData!['photoURL'],
-                              name: userData!['displayName'],
+                              name: userData['displayName'],
                               
                             ),
                           );

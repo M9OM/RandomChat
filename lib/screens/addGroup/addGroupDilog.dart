@@ -221,8 +221,6 @@ bool loading = false;
             content: Center(child:  Text('You should add more than 2 users',style: TextStyle(color: theme.iconTheme.color),)),
             duration: const Duration(milliseconds: 1500),
             width: 280.0,
-            
-             // Width of the SnackBar.
             padding:EdgeInsets.all(15),
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(

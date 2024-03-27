@@ -2,13 +2,20 @@ import 'package:flutter/cupertino.dart';
 
 
 class ModelsProvider with ChangeNotifier {
-  // String currentModel = "text-davinci-003";
   String roomID = "";
   String ontherID = "";
-String usersId ="";
+  String usersId ="";
+  List topicSeclected = [];
 
+
+
+void topicSeclect (List topic){
+  topicSeclected.addAll(topicSeclected);
+  notifyListeners();
+}
 
   void setCurrentModel(String usersIds) {
+
     usersId = usersIds;
     notifyListeners();
   }

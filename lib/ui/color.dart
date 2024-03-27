@@ -16,6 +16,7 @@ class LightMode {
 }
 
 ThemeData lightMode = ThemeData(
+  primarySwatch:Colors.purple,
     iconTheme: IconThemeData(color: LightMode().iconColor),
     bottomNavigationBarTheme:
         BottomNavigationBarThemeData(backgroundColor: LightMode().bottomColor),
@@ -46,6 +47,7 @@ ThemeData darkMode = ThemeData.dark().copyWith(
     ));
 
 class DarktMode {
+  
   Color mainColor = Color.fromARGB(255, 179, 112, 255);
   Color iconColor = Color.fromARGB(255, 213, 213, 213);
   Color backgroundColor = Colors.black;
