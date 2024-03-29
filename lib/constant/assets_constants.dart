@@ -18,6 +18,14 @@ static const String penIcon = "$iconPath/addPost.png";
 static const String pictureIcon = "$iconPath/picture.png";
 static const String gifIcon = "$iconPath/gif-square.png";
 static const String chatIcon = "$iconPath/chat.png";
+static const String logout = "$iconPath/sign-out-alt.svg";
+static const String dark = "$iconPath/moon-stars.svg";
+static const String light = "$iconPath/brightness.svg";
+static const String settings = "$iconPath/settings.svg";
+static const String aboutAs = "$iconPath/info.svg";
+static const String user = "$iconPath/user.svg";
+
+
 static const String searchIcon = "$iconPath/search.png";
 static const String sendIcon = "$iconPath/send.png";
 static const String playIcon = "$iconPath/play.png";

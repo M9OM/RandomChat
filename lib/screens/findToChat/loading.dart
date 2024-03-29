@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 import '../../services/firebaseService.dart';
 
@@ -65,6 +66,7 @@ class _LoadingUsersState extends State<LoadingUsers> {
       setState(() {
         imageIndex++;
         nameIndex++;
+        HapticFeedback.mediumImpact();
 
         if (imageIndex == image.length) {
           imageIndex = 0;
@@ -107,7 +109,7 @@ class _LoadingUsersState extends State<LoadingUsers> {
                       final photoURL = userData['photoURL'].toString();
                       return CircleAvatar(
                         radius: 60,
-                        backgroundImage: NetworkImage(photoURL),
+                        backgroundImage: NetworkImage(photoURL,),
                       );
                     } else {
                       return const Text(
@@ -128,7 +130,7 @@ class _LoadingUsersState extends State<LoadingUsers> {
                 CircleAvatar(
                   radius: 60,
                   backgroundImage: NetworkImage(
-                    image[imageIndex].toString(),
+                    image[imageIndex],
                   ),
                 ),
                 Text(

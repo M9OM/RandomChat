@@ -20,17 +20,8 @@ class FindToChat extends StatefulWidget {
   State<FindToChat> createState() => _FindToChatState();
 }
 
-int nameIndex = 0;
-int imageIndex = 0;
 
-List image = [
-  'https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg?size=626&ext=jpg',
-  'https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671142.jpg?size=626&ext=jpg',
-  'https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671157.jpg?w=900&t=st=1710068057~exp=1710068657~hmac=bc8e6cd95ff6878734620e062bda14761474539b17d0f1b5b94c244cff1ec7ee',
-  'https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671134.jpg?w=900&t=st=1710068071~exp=1710068671~hmac=61ddfb38f407af33e0a40a60fb2e2012e01d7c3870b4322c0ebd0fada0734f8d',
-  'https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671136.jpg?t=st=1710068071~exp=1710068671~hmac=d571b686445167b4cd3749c463ab993ee10f1af8df95127eb0def87e6b87ecfa'
-];
-List name = ['mohammed', 'salem', 'shahad', 'fatima', 'abood', 'maram'];
+
 bool searching = false;
 
 class _FindToChatState extends State<FindToChat> {
@@ -61,153 +52,156 @@ class _FindToChatState extends State<FindToChat> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return ModalProgressHUD(
-      inAsyncCall: searching,
-      progressIndicator: const LoadingUsers(),
-      child: Scaffold(
-        body: StreamBuilder<QuerySnapshot>(
-          stream: _userStream,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
-            }
-            if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            }
-            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-              return const Text('No users available');
-            }
+    return Scaffold(
+      body: StreamBuilder<QuerySnapshot>(
+        stream: _userStream,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          }
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return const Text('No users available');
+          }
 
-            var users = snapshot.data!.docs;
-            // ignore: list_remove_unrelated_type
+          var users = snapshot.data!.docs;
+          // ignore: list_remove_unrelated_type
 
-            return Center(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  height: 20,
-                ),
-                StreamBuilder<DocumentSnapshot>(
-                    stream: getTrying(user!.uid),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return const Text('No users available');
-                      }
+          return Center(
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(
+                height: 20,
+              ),
+              StreamBuilder<DocumentSnapshot>(
+                  stream: getTrying(user!.uid),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Text('No users available');
+                    }
 
-                      var tringTime = 0;
-                      if (!snapshot.data!.exists) {
-                        tringTime = 0;
-                      } else {
-                        tringTime = snapshot.data!['trying'];
-                      }
+                    var tringTime = 0;
+                    if (!snapshot.data!.exists) {
+                      tringTime = 0;
+                    } else {
+                      tringTime = snapshot.data!['trying'];
+                    }
 
-                      return InkWell(
-                        onTap: () async {
+                    return InkWell(
+                      onTap: () async {
 
-                          setState(() {
-                                               searching = true;
+                        setState(() {
+                                             searching = true;
 
-                          });
+                        });
 
-                          bool loop =true;
-                          while (loop) {
-                            if (tringTime < 120) {
-                              tringTimes(tringTime + 1, user!.uid);
-                              Random random = Random();
-                              int randomNumber = random.nextInt(users.length);
+                        bool loop =true;
+                        while (loop) {
+                          if (tringTime < 120) {
+                            tringTimes(tringTime + 1, user!.uid);
+                            Random random = Random();
+                            int randomNumber = random.nextInt(users.length);
+Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => LoadingUsers(
+                                            )));
+                            print(
+                                'roomId before Future.delayed: $roomId'); // Check if null before delay
+                            await Future.delayed(
+                                const Duration(milliseconds: 7000), () async {
+                              setState(() {
+                                roomId =
+                                    '${DateTime.now().microsecondsSinceEpoch}${DateTime.now().millisecond}';
+                              });
+                              print('roomId after assignment: $roomId');
+                              print(users[randomNumber]['uid']);
+                              if (users[randomNumber]['uid'] == user!.uid) {
+                                loop=true;
+                              }else{
+                                loop =false;
+
+                              createRoom(roomId, user?.uid ?? '',
+                                  users[randomNumber]['uid']);
+                              setState(() {
+                                senderId = users[randomNumber]['uid'];
+                              });
+                              Timestamp lastOnlineTimestamp =
+                                  users[randomNumber]['lastOnline'];
+                              DateTime lastOnlineDateTime =
+                                  lastOnlineTimestamp.toDate();
+
+                              bool isOnline = DateTime.now()
+                                      .difference(lastOnlineDateTime) <
+                                  Duration(minutes: 5);
+
+
 
                               print(
-                                  'roomId before Future.delayed: $roomId'); // Check if null before delay
-                              await Future.delayed(
-                                  const Duration(milliseconds: 7000), () async {
-                                setState(() {
-                                  roomId =
-                                      '${DateTime.now().microsecondsSinceEpoch}${DateTime.now().millisecond}';
-                                });
-                                print('roomId after assignment: $roomId');
-                                print(users[randomNumber]['uid']);
-                                if (users[randomNumber]['uid'] == user!.uid) {
-                                  loop=true;
-                                }else{
-                                  loop =false;
+                                  '$isOnline ${DateTime.now().difference(lastOnlineDateTime)}');
 
-                                createRoom(roomId, user?.uid ?? '',
-                                    users[randomNumber]['uid']);
-                                setState(() {
-                                  senderId = users[randomNumber]['uid'];
-                                });
-                                Timestamp lastOnlineTimestamp =
-                                    users[randomNumber]['lastOnline'];
-                                DateTime lastOnlineDateTime =
-                                    lastOnlineTimestamp.toDate();
-
-                                bool isOnline = DateTime.now()
-                                        .difference(lastOnlineDateTime) <
-                                    Duration(minutes: 5);
-
-
-
-                                print(
-                                    '$isOnline ${DateTime.now().difference(lastOnlineDateTime)}');
-
-                                if (roomId != null) {
-                                  
-                                  await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => ChatScreen(
-                                            group: false,
-                                                roomId: roomId,
-                                                ontherId: users[randomNumber]
-                                                    ['uid'],
-                                                name: users[randomNumber]
-                                                    ['displayName'],
-                                                pohtoURL: users[randomNumber]
-                                                    ['photoURL'],
-                                                online: isOnline,
-                                              )));
-                                }
+                              if (roomId != null) {
+                                
+                                await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ChatScreen(
+                                          group: false,
+                                              roomId: roomId,
+                                              ontherId: users[randomNumber]
+                                                  ['uid'],
+                                              name: users[randomNumber]
+                                                  ['displayName'],
+                                              pohtoURL: users[randomNumber]
+                                                  ['photoURL'],
+                                              online: isOnline,
+                                            )),).then((_) {
+              // Remove the previous screen
+              Navigator.pop(context);
+            });;
+                              }
 setState(() {
-                                  searching = false;
+                                searching = false;
 
 });
 
 
 
-                            }
-                            
-                            
-                            });
-                            } else {
-                              await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const PaymentScreen()));
-                            }
                           }
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: theme.primaryColor,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Column(
-                            children: [
-                              const Text('Start Chatting!'),
-                              Text('${tringTime}/5'),
-                            ],
-                          ),
+                          
+                          
+                          });
+                          } else {
+                            await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const PaymentScreen()));
+                          }
+                        }
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: theme.primaryColor,
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                      );
-                    }),
-              ],
-            ));
-          },
-        ),
+                        child: Column(
+                          children: [
+                            const Text('Start Chatting!'),
+                            Text('${tringTime}/5'),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+            ],
+          ));
+        },
       ),
     );
   }

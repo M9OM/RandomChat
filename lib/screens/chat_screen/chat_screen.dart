@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lottie/lottie.dart';
@@ -208,6 +209,8 @@ getUserDataa = preloadUserData();
                               messages.length) {
                         final newIndex = messages.length -
                             _listKey.currentState!.widget.initialItemCount;
+                                    HapticFeedback.mediumImpact();
+
                         _listKey.currentState!.insertItem(newIndex-1);
                       }
 

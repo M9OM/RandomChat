@@ -69,7 +69,10 @@ users.add(adminId);
                             online: false, group: true,
                           ),
                         ),
-                      );
+                      ).then((_) {
+              // Remove the previous screen
+              Navigator.pop(context);
+            });
 
 
 }
@@ -88,7 +91,12 @@ Stream<QuerySnapshot> getListUsersChat(String uid, String uid2) {
       .orderBy('timestamp', descending: true)
       .where('userId', arrayContainsAny: [uid]).snapshots();
 }
-
+void getListUsersChatt(String uid, String uid2) {
+   _firestore
+      .collection('rooms')
+      .orderBy('timestamp', descending: true)
+      .where('userId', arrayContainsAny: [uid]).snapshots();
+}
 Stream<QuerySnapshot> getListUsers() {
   return _firestore
       .collection('users')

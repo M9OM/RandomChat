@@ -2,8 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/providerauth.dart';
+class DarktMode {
+    Color highlightColor = Color.fromARGB(255, 160, 115, 236);
 
+  Color mainColor = const Color.fromARGB(255, 179, 112, 255);
+  Color iconColor = const Color.fromARGB(255, 213, 213, 213);
+  Color backgroundColor = Colors.black;
+  Color cardBackground = const Color.fromARGB(255, 38, 38, 38);
+  Color bottomColor = const Color(0xFF10133B);
+  Color appBarColor = const Color.fromARGB(255, 85, 85, 85);
+  Color meColor = const Color.fromARGB(255, 38, 38, 38);
+  Color otherColor = const Color(0xFFE5CFFF);
+}
 class LightMode {
+  Color highlightColor = Color.fromARGB(255, 160, 115, 236);
   Color mainColor = const Color(0xFFE5CFFF);
   Color iconColor = Colors.black;
   Color backgroundColor = const Color(0xFFE9F3FB);
@@ -16,6 +28,7 @@ class LightMode {
 }
 
 ThemeData lightMode = ThemeData(
+  selectedRowColor: LightMode().highlightColor,
   primarySwatch:Colors.purple,
     iconTheme: IconThemeData(color: LightMode().iconColor),
     bottomNavigationBarTheme:
@@ -32,6 +45,8 @@ ThemeData lightMode = ThemeData(
     ));
 
 ThemeData darkMode = ThemeData.dark().copyWith(
+    selectedRowColor: DarktMode().highlightColor,
+
     iconTheme: IconThemeData(color: DarktMode().iconColor),
     bottomNavigationBarTheme:
         BottomNavigationBarThemeData(backgroundColor: DarktMode().bottomColor),
@@ -46,17 +61,7 @@ ThemeData darkMode = ThemeData.dark().copyWith(
       bodyMedium: TextStyle(color: Colors.white, fontFamily: 'Orbitron'),
     ));
 
-class DarktMode {
-  
-  Color mainColor = Color.fromARGB(255, 179, 112, 255);
-  Color iconColor = Color.fromARGB(255, 213, 213, 213);
-  Color backgroundColor = Colors.black;
-  Color cardBackground = Color.fromARGB(255, 38, 38, 38);
-  Color bottomColor = const Color(0xFF10133B);
-  Color appBarColor = Color.fromARGB(255, 85, 85, 85);
-  Color meColor = Color.fromARGB(255, 38, 38, 38);
-  Color otherColor = const Color(0xFFE5CFFF);
-}
+
 
 EdgeInsetsGeometry padding = const EdgeInsets.all(15);
 AlignmentGeometry meAlignment = Alignment.topRight;

@@ -15,7 +15,6 @@ class ChangeScreen extends StatefulWidget {
   State<ChangeScreen> createState() => _sreens_of_botoomBarState();
 }
 
-
 class _sreens_of_botoomBarState extends State<ChangeScreen> {
   int currentIndex = 0;
   final screens = [
@@ -55,14 +54,17 @@ class bottomNavigationBarWidget extends StatelessWidget {
     // Get the current index from the widget's properties
 
     // Define the colors for the selected and unselected icons
-    Color selectedItemColor = Colors.white;
-    Color unSelectedItemColor = Colors.grey;
+    Color? selectedItemColor = Theme.of(context).selectedRowColor;
+    Color? unSelectedItemColor = Theme.of(context).disabledColor;
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(30),
+    return Container(
+      decoration: BoxDecoration(
+          border: Border(
+              top: BorderSide(width: 1, color: Theme.of(context).cardColor))),
+      // borderRadius: BorderRadius.circular(30),
       child: BottomNavigationBar(
           elevation: 0,
-          backgroundColor: ThemeData().bottomAppBarTheme.color,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           type: BottomNavigationBarType.fixed,
           selectedFontSize: 2,
           currentIndex: currentIndex,
@@ -73,14 +75,10 @@ class bottomNavigationBarWidget extends StatelessWidget {
             BottomNavigationBarItem(
                 icon: currentIndex == 0
                     // selected item
-                    ? Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: const BoxDecoration(
-                            color: Colors.white, shape: BoxShape.circle),
-                        child: Image.asset(
-                          AssetsConstants.homeIcon,
-                          width: 25,
-                        ),
+                    ? Image.asset(
+                        AssetsConstants.homeIcon,
+                        color: selectedItemColor,
+                        width: 25,
                       )
 
                     // unselected item
@@ -90,17 +88,13 @@ class bottomNavigationBarWidget extends StatelessWidget {
                         width: 25,
                       ),
                 label: ''),
-                            BottomNavigationBarItem(
+            BottomNavigationBarItem(
                 icon: currentIndex == 1
                     // selected item
-                    ? Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: const BoxDecoration(
-                            color: Colors.white, shape: BoxShape.circle),
-                        child: Image.asset(
-                          AssetsConstants.searchIcon,
-                          width: 25,
-                        ),
+                    ? Image.asset(
+                        AssetsConstants.searchIcon,
+                        color: selectedItemColor,
+                        width: 25,
                       )
 
                     // unselected item
@@ -113,15 +107,8 @@ class bottomNavigationBarWidget extends StatelessWidget {
             BottomNavigationBarItem(
                 icon: currentIndex == 2
                     ? // selected item
-                    Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: const BoxDecoration(
-                            color: Colors.white, shape: BoxShape.circle),
-                        child: Image.asset(
-                          AssetsConstants.chatIcon,
-                          width: 25,
-                        ),
-                      )
+                    Image.asset(AssetsConstants.chatIcon,
+                        width: 25, color: selectedItemColor)
                     : // unselected item
                     Image.asset(
                         AssetsConstants.chatIcon,
