@@ -4,6 +4,7 @@
 import 'package:chatme/screens/chatList/chatList.dart';
 import 'package:chatme/screens/findToChat/findToChat.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../constant/assets_constants.dart';
 import '../ui/color.dart';
 import 'home/homeScreen.dart';
@@ -25,14 +26,16 @@ class _sreens_of_botoomBarState extends State<ChangeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
-      extendBody: true,
 
       // drawer: AppDrawer(),
 
       bottomNavigationBar: bottomNavigationBarWidget(
           currentIndex: currentIndex,
           indextChange: (index) {
+                                    HapticFeedback.mediumImpact();
+
             setState(() => currentIndex = index);
           }),
       body: IndexedStack(

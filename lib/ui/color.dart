@@ -3,20 +3,19 @@ import 'package:provider/provider.dart';
 
 import '../provider/providerauth.dart';
 class DarktMode {
-    Color highlightColor = Color.fromARGB(255, 160, 115, 236);
-
-  Color mainColor = const Color.fromARGB(255, 179, 112, 255);
+  Color highlightColor = Color.fromARGB(255, 160, 115, 236);
+  Color mainColor = Color.fromRGBO(143, 47, 253, 1);
   Color iconColor = const Color.fromARGB(255, 213, 213, 213);
   Color backgroundColor = Colors.black;
   Color cardBackground = const Color.fromARGB(255, 38, 38, 38);
   Color bottomColor = const Color(0xFF10133B);
-  Color appBarColor = const Color.fromARGB(255, 85, 85, 85);
+  Color appBarColor = Color.fromARGB(255, 26, 26, 26);
   Color meColor = const Color.fromARGB(255, 38, 38, 38);
   Color otherColor = const Color(0xFFE5CFFF);
 }
 class LightMode {
   Color highlightColor = Color.fromARGB(255, 160, 115, 236);
-  Color mainColor = const Color(0xFFE5CFFF);
+  Color mainColor = Color.fromRGBO(183, 119, 255, 1);
   Color iconColor = Colors.black;
   Color backgroundColor = const Color(0xFFE9F3FB);
   Color cardBackground = Colors.white;

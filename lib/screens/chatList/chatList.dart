@@ -116,37 +116,38 @@ class ChatList extends StatelessWidget {
                         title: Text(
                           chatUsers[index]['NameOfGroup'] ?? 'Unknown',
                         ),
-                        leading:  CircleAvatar(
-                          radius: 25,
-                          backgroundColor: theme.primaryColor,
-                          child:Text('G',style: TextStyle(
-                            
-                            fontWeight:  FontWeight.bold,
-                            color: theme.cardColor,fontSize: 40),)
-                         ,
+                        leading:  Padding(
+                          padding: const EdgeInsets.only(bottom: 10,top: 10),
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            padding: EdgeInsets.all(5),
+                            decoration: BoxDecoration( borderRadius: BorderRadius.circular(100),                              color: theme.cardColor,
+),
+                            child: Image.asset('assets/images/bottomIcon/users-alt.png',color: theme.selectedRowColor,)),
                         ),
-                        subtitle: StreamBuilder<QuerySnapshot>(
-                          stream: FirebaseFirestore.instance
-                              .collection('rooms/${document.id}/messages')
-                              .orderBy('timestamp', descending: true)
-                              .limit(1)
-                              .snapshots(),
-                          builder: (context, messageSnapshot) {
-                            if (messageSnapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Text('...');
-                            }
-                            if (messageSnapshot.hasError) {
-                              return Text('Error: ${messageSnapshot.error}');
-                            }
-                            var messages = messageSnapshot.data!.docs;
-                            if (messages.isNotEmpty) {
-                              var lastMessage = messages.last;
-                              return Text(lastMessage['text']);
-                            }
-                            return const SizedBox();
-                          },
-                        ),
+                        // subtitle: StreamBuilder<QuerySnapshot>(
+                        //   stream: FirebaseFirestore.instance
+                        //       .collection('rooms/${document.id}/messages')
+                        //       .orderBy('timestamp', descending: true)
+                        //       .limit(1)
+                        //       .snapshots(),
+                        //   builder: (context, messageSnapshot) {
+                        //     if (messageSnapshot.connectionState ==
+                        //         ConnectionState.waiting) {
+                        //       return const Text('...');
+                        //     }
+                        //     if (messageSnapshot.hasError) {
+                        //       return Text('Error: ${messageSnapshot.error}');
+                        //     }
+                        //     var messages = messageSnapshot.data!.docs;
+                        //     if (messages.isNotEmpty) {
+                        //       var lastMessage = messages.last;
+                        //       return Text(lastMessage['text']);
+                        //     }
+                        //     return const SizedBox();
+                        //   },
+                        // ),
                       ),
                     ),
                   );

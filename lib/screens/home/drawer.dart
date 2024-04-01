@@ -6,15 +6,18 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../AboutUs/aboutUs_screen.dart';
+import '../../setting/setting_screen.dart';
 
 class AdvancedDrawerShow extends StatelessWidget {
   AdvancedDrawerShow(
       {super.key,
       required this.logoutTap,
       required this.darkModeTap,
+      required this.languageTap,
       required this.isDark});
   final Function logoutTap;
   final Function darkModeTap;
+  final Function languageTap;
   bool isDark;
   @override
   Widget build(BuildContext context) {
@@ -26,7 +29,7 @@ double _width = 1.5;
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
+          const SizedBox(
             height: 70,
           ),
           ListTile(
@@ -38,7 +41,7 @@ double _width = 1.5;
               width: 30,
               color: colorIcon,
             ),
-            title: Text(
+            title: const Text(
               'Profile',
               style: TextStyle(fontFamily: 'Orbitron'),
             ),
@@ -55,10 +58,28 @@ double _width = 1.5;
             ),
             title: Text(
               isDark ? 'Light' : "Dark",
-              style: TextStyle(fontFamily: 'Orbitron'),
+              style: const TextStyle(fontFamily: 'Orbitron'),
+            ),
+          ),
+        ListTile(
+            shape: Border(
+                bottom:
+                    BorderSide(width: _width, color: _colorWidth)),
+            onTap: () => languageTap(),
+            leading: SvgPicture.asset(
+               AssetsConstants.language,
+              width: 30,
+              color: colorIcon,
+            ),
+            title: Text(
+               "language",
+              style: const TextStyle(fontFamily: 'Orbitron'),
             ),
           ),
           ListTile(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder:(context) => Settings_Screen(),));
+            },
             shape: Border(
                 bottom:
                     BorderSide(width: _width, color: _colorWidth)),
@@ -67,7 +88,7 @@ double _width = 1.5;
               width: 30,
               color: colorIcon,
             ),
-            title: Text(
+            title: const Text(
               'Settings',
               style: TextStyle(fontFamily: 'Orbitron'),
             ),
@@ -89,7 +110,7 @@ double _width = 1.5;
               width: 30,
               color: colorIcon,
             ),
-            title: Text(
+            title: const Text(
               'About us',
               style: TextStyle(fontFamily: 'Orbitron'),
             ),
@@ -104,7 +125,7 @@ double _width = 1.5;
               width: 30,
               color: colorIcon,
             ),
-            title: Text(
+            title: const Text(
               'Logout',
               style: TextStyle(fontFamily: 'Orbitron'),
             ),

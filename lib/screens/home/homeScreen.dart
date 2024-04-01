@@ -1,4 +1,5 @@
 import 'package:chatme/screens/home/drawer.dart';
+import 'package:chatme/screens/home/layout/card/card_users.dart';
 import 'package:chatme/screens/registration/register_screen.dart';
 import 'package:chatme/services/firebaseService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,8 +13,8 @@ import '../../widgets/dilog.dart';
 import '../addGroup/addGroupDilog.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
-
 import 'appbar.dart';
+import 'layout/card/card_loading.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -88,11 +89,28 @@ class _HomeScreenState extends State<HomeScreen> {
     final user = Provider.of<ModelsProvider>(context);
     final theme = Theme.of(context);
     final darktMode = Provider.of<DarktModeProvider>(context);
+    final lang = Provider.of<DarktModeProvider>(context);
 
     return AdvancedDrawer(
+      childDecoration:BoxDecoration(borderRadius: BorderRadius.circular(30),    boxShadow: [
+       BoxShadow(
+      color: theme.primaryColor.withOpacity(0.2),
+      spreadRadius: 4,
+      offset: const Offset(-15, 0),
+    ),
+
+
+     BoxShadow(
+      color: theme.primaryColor.withOpacity(0.2),
+      offset: Offset(-40,0),
+      
+    ) 
+
+    ],
+),
       openRatio: 0.60,
-      openScale: 0.90,
       backdropColor: theme.scaffoldBackgroundColor,
+      openScale: 0.80,
       controller: _drawerController,
       drawer: AdvancedDrawerShow(
           isDark: darktMode.isDarkMode,
@@ -114,22 +132,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 (Route<dynamic> route) =>
                     false, // This predicate always returns false, so it will remove all routes
               );
-            }, text: '');
-          }),
+            }, text: 'Do you want to logout from your account?');
+          }, languageTap:(){
+
+lang.locale == Locale('en', 'US')?
+lang.changeLanguage(Locale('ar', '')):lang.changeLanguage(Locale('en', 'US'));
+
+          },),
       child: Scaffold(
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            MyApbbar(drawerTap:(){
-
- _drawerController.showDrawer();
-
-
+            MyApbbar(
+              
+              drawerTap: () {
+              _drawerController.showDrawer();
+              
             }),
             LiquidPullToRefresh(
               onRefresh: () async {
-                        HapticFeedback.mediumImpact();
-
+                HapticFeedback.mediumImpact();
+        
                 getDocId();
               }, // refresh callback
               color: theme.cardColor,
@@ -138,7 +161,6 @@ class _HomeScreenState extends State<HomeScreen> {
               springAnimationDurationInMilliseconds: 800,
               child: Expanded(
                   child: ListView(children: [
-        
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
@@ -158,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               return const Text(
                                   'No admin data available'); // Or handle the case when data is not available
                             }
-
+        
                             var adminData = snapshot.data!.data()! as Map<
                                 String,
                                 dynamic>; // Explicitly cast to Map<String, dynamic>
@@ -166,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 'photoURL']; // Assuming 'photoURL' is the key in the admin data map
                             var name = adminData[
                                 'displayName']; // Assuming 'photoURL' is the key in the admin data map
-
+        
                             return Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
@@ -199,7 +221,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           InkWell(
                             onTap: () async {
                               //  AuthService().signOut();
-
+        
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -211,9 +233,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               padding: const EdgeInsets.all(5),
                               decoration: BoxDecoration(
                                 color: theme.primaryColor,
-                                shape: BoxShape.circle,
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              child: const Icon(Icons.add),
+                              child:  Icon(Icons.add,color: theme.scaffoldBackgroundColor,),
                             ),
                           ),
                         ],
@@ -242,45 +264,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             itemCount: 5,
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: theme.cardColor,
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  padding: const EdgeInsets.all(15),
-                                  child: Column(
-                                    children: [
-                                      Stack(
-                                        alignment: Alignment.bottomRight,
-                                        children: [
-                                          CircleAvatar(
-                                            radius: 30,
-                                            backgroundColor:
-                                                theme.scaffoldBackgroundColor,
-                                          ),
-                                          Container(
-                                            width: 15,
-                                            height: 15,
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  width: 3,
-                                                  color: const Color.fromARGB(
-                                                      255, 41, 41, 41)),
-                                              color: Colors.green,
-                                              shape: BoxShape.circle,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: Text(''),
-                                      )
-                                    ],
-                                  ),
-                                ),
+                              return CardUserLoading(
+                                onTap: () {},
                               );
                             },
                           );
@@ -290,11 +275,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           print(snapshot.error);
                           return Text('Error: ${snapshot.error}');
                         }
-
+        
                         var profileData = snapshot.data!.docs;
-
+        
                         // print('$isOnline ${DateTime.now().difference(lastOnlineDateTime)}');
-
+        
                         return ListView.builder(
                           itemCount: profileData.length,
                           scrollDirection: Axis.horizontal,
@@ -306,67 +291,17 @@ class _HomeScreenState extends State<HomeScreen> {
                             bool isOnline =
                                 DateTime.now().difference(lastOnlineDateTime) <
                                     const Duration(minutes: 2);
-
+        
+                            String displayName =
+                                profileData[index]['displayName'];
+                            String photoURL = profileData[index]['photoURL'];
+        
                             return profileData[index]['uid'] != user.usersId
-                                ? Padding(
-                                    padding: const EdgeInsets.all(5.0),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: theme.cardColor,
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      padding: const EdgeInsets.all(15),
-                                      child: Column(
-                                        children: [
-                                          Stack(
-                                            alignment: Alignment.bottomRight,
-                                            children: [
-                                              CircleAvatar(
-                                                radius: 30,
-                                                backgroundImage: NetworkImage(
-                                                    profileData[index]
-                                                        ['photoURL']),
-                                                backgroundColor: theme
-                                                    .scaffoldBackgroundColor,
-                                              ),
-                                              isOnline
-                                                  ? Container(
-                                                      width: 15,
-                                                      height: 15,
-                                                      decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                          width: 3,
-                                                          color:
-                                                              theme.cardColor,
-                                                        ),
-                                                        color: Colors.green,
-                                                        shape: BoxShape.circle,
-                                                      ),
-                                                    )
-                                                  : Container(
-                                                      width: 15,
-                                                      height: 15,
-                                                      decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                          width: 3,
-                                                          color:
-                                                              theme.cardColor,
-                                                        ),
-                                                        color: Colors.red,
-                                                        shape: BoxShape.circle,
-                                                      ),
-                                                    )
-                                            ],
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(profileData[index]
-                                                ['displayName']),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  )
+                                ? CardUsers(
+                                    onTap: () {},
+                                    isOnline: isOnline,
+                                    photoURL: photoURL,
+                                    displayName: displayName)
                                 : const SizedBox();
                           },
                         );

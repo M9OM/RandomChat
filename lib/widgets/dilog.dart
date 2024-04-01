@@ -8,7 +8,7 @@ Future<void> dialogBuilder(BuildContext context, {required String text, required
 
         return AlertDialog(
           content:  Text(
-            'Do you want to logout from your account?',style: theme.textTheme.bodyLarge,
+            text,style: theme.textTheme.bodyLarge,
           ),
           actions: <Widget>[
             TextButton(

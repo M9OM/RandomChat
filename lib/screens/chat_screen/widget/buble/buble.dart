@@ -69,7 +69,7 @@ class Buble extends StatelessWidget {
                           color: theme.primaryColor,
                           borderRadius: borderRadiusOther,
                         ),
-                        child: Text(text),
+                        child: Text(text,style: TextStyle(color: Colors.white),),
                       ),
                     ),
                   ],

@@ -1,10 +1,11 @@
-
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DarktModeProvider with ChangeNotifier {
+  Locale get locale => _locale;
+
+  Locale _locale = const Locale('en', 'US');
+
   bool _isDarkMode = false;
 
   bool get isDarkMode => _isDarkMode;
@@ -21,4 +22,8 @@ class DarktModeProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void changeLanguage(Locale newLocale) {
+    _locale = newLocale;
+    notifyListeners();
+  }
 }

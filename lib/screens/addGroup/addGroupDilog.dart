@@ -202,7 +202,7 @@ bool loading = false;
         
 
 
-             if(communityIdList.length>2){
+             if(communityIdList.length>2&&_textController.text.isNotEmpty){
      setState(() {
                loading = true;
              });
@@ -214,7 +214,7 @@ bool loading = false;
 
              });   
 
-             }else{
+             }else if(communityIdList.length<2){
 
    final snackBar = SnackBar(
     backgroundColor: theme.cardColor,
@@ -227,6 +227,21 @@ bool loading = false;
               borderRadius: BorderRadius.circular(10.0),
             ));
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+             } else if(_textController.text.isEmpty){
+
+   final snackBar = SnackBar(
+    backgroundColor: theme.cardColor,
+            content: Center(child:  Text('You should write name for group',style: TextStyle(color: theme.iconTheme.color),)),
+            duration: const Duration(milliseconds: 1500),
+            width: 280.0,
+            padding:EdgeInsets.all(15),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ));
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
 
              }
           

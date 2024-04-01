@@ -6,10 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
-
+import 'package:flutter_localization/flutter_localization.dart';
+import 'loc/lang_setup.dart';
 import 'screens/ChangeScreens.dart';
 import 'screens/SplashScreen/splash_screen.dart';
-import 'screens/profileSetup/profile_bio_setup.dart';
 import 'ui/color.dart';
 
 Future check(context) async {
@@ -67,15 +67,21 @@ class _MyAppState extends State<MyApp> {
               ChangeNotifierProvider<DarktModeProvider>(
                 create: (_) => DarktModeProvider()..loadDarkMode(),
               ),
+              
             ],
             child: Consumer<DarktModeProvider>(
               builder: (context, darkModeNotifier, _) {
                 return MaterialApp(
                   debugShowCheckedModeBanner: false,
+                supportedLocales: AppLocalizationsSetup.supportedLocales,
+            localizationsDelegates: AppLocalizationsSetup.localizationsDelegates,
+
+
                   theme: darkModeNotifier.isDarkMode ? darkMode : lightMode,
+                  locale: darkModeNotifier.locale,
                   home: loading
                       ? const SplashScreen()
-                      : user==null
+                      : user == null
                           ? const register_screen()
                           : const ChangeScreen(),
                 );

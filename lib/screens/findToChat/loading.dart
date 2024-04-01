@@ -66,7 +66,6 @@ class _LoadingUsersState extends State<LoadingUsers> {
       setState(() {
         imageIndex++;
         nameIndex++;
-        HapticFeedback.mediumImpact();
 
         if (imageIndex == image.length) {
           imageIndex = 0;

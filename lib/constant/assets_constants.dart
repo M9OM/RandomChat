@@ -24,8 +24,9 @@ static const String light = "$iconPath/brightness.svg";
 static const String settings = "$iconPath/settings.svg";
 static const String aboutAs = "$iconPath/info.svg";
 static const String user = "$iconPath/user.svg";
-
-
+static const String menu = "$iconPath/menu-dots.svg";
+static const String add = "$iconPath/square-plus.svg";
+static const String language = "$iconPath/language.svg";
 static const String searchIcon = "$iconPath/search.png";
 static const String sendIcon = "$iconPath/send.png";
 static const String playIcon = "$iconPath/play.png";

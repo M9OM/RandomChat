@@ -82,10 +82,21 @@ class _ChatScreenState extends State<ChatScreen> {
       print('Error fetching data: $e');
     }
   }
-
+bool isTextNotEmpty =false;
   @override
   void initState() {
     super.initState();
+  _textController.addListener(() {
+  setState(() {
+    // Check if the text is empty
+    if (_textController.text.isNotEmpty) {
+      isTextNotEmpty = true;
+    } else {
+      isTextNotEmpty = false;
+    }
+  });
+});
+
     user = FirebaseAuth.instance.currentUser!;
 getUserDataa = preloadUserData();
     lastOnline(user.uid);
@@ -152,27 +163,7 @@ getUserDataa = preloadUserData();
                     colorFilter: const ColorFilter.mode(
                         Color.fromARGB(169, 0, 0, 0), BlendMode.darken))),
             child: GestureDetector(
-              onLongPress: () {
-                blackTheme() {
-                  setState(() {
-                    themeChat = '1';
-                  });
-                }
-      
-                blueTheme() {
-                  setState(() {
-                    themeChat = '2';
-                  });
-                }
-      
-                redTheme() {
-                  setState(() {
-                    themeChat = '3';
-                  });
-                }
-      
-                Dilog().dialogBuilder(context, blackTheme, blueTheme, redTheme);
-              },
+
               onTap: () {
                 FocusScopeNode currentFocus = FocusScope.of(context);
                 if (!currentFocus.hasPrimaryFocus) {
@@ -186,6 +177,7 @@ getUserDataa = preloadUserData();
                       online: widget.online,
                       name: widget.name,
                       group:widget.group,
+                      roomID:widget.roomId,
                       ontherID:widget.ontherId,
                       membres: widget.membres ?? []                  
                       ),
@@ -300,7 +292,7 @@ getUserDataa = preloadUserData();
                                   width: 2,
                                 ),
                               ),
-                              suffixIcon: InkWell(
+                              suffixIcon:isTextNotEmpty? InkWell(
                                   onTap: () {
                                     playSound();
       
@@ -326,7 +318,7 @@ getUserDataa = preloadUserData();
                                         color: theme.iconTheme.color,
                                       ),
                                     ),
-                                  )),
+                                  )):SizedBox()
                             ),
                           ),
                         ),
