@@ -97,7 +97,7 @@ class ChatList extends StatelessWidget {
                         border: Border(
                           bottom: BorderSide(
                             width: 1,
-                            color: theme.cardColor,
+                            color: theme.dividerColor,
                           ),
                         ),
                       ),
@@ -184,7 +184,7 @@ class ChatList extends StatelessWidget {
                         border: Border(
                           bottom: BorderSide(
                             width: 1,
-                            color: theme.cardColor,
+                            color: theme.dividerColor,
                           ),
                         ),
                       ),

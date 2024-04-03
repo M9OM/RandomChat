@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:chatme/constant/str_extntion.dart';
 import 'package:chatme/services/firebaseService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../constant/translate_constat.dart';
 import '../../../provider/providerauth.dart';
 import '../../../widgets/dilog.dart';
 
@@ -67,7 +69,7 @@ class _AppbarMsgState extends State<AppbarMsg> {
                       onTap: () {
                         Navigator.pop(context);
                       },
-                      child: const Icon(Icons.arrow_back_ios_new_sharp),
+                      child: const Icon(Icons.arrow_back),
                     ),
                     const SizedBox(width: 20),
                     widget.membres!.isEmpty
@@ -145,7 +147,7 @@ class _AppbarMsgState extends State<AppbarMsg> {
                                         ),
                                         const SizedBox(width: 2),
                                         Text(
-                                          isOnline ? 'Online' : 'Offline',
+                                          isOnline ? TranslationConstants.online.t(context) :    TranslationConstants.offline.t(context),
                                           style: const TextStyle(
                                               color: Colors.grey),
                                         ),
@@ -173,11 +175,11 @@ class _AppbarMsgState extends State<AppbarMsg> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  InkWell(onTap: () {}, child: const Text('Hobbies')),
+                                  InkWell(onTap: () {}, child:  Text(TranslationConstants.hobbies.t(context))),
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  InkWell(onTap: () {}, child: const Text('Theme')),
+                                  InkWell(onTap: () {}, child:  Text(TranslationConstants.theme.t(context))),
                                   const SizedBox(
                                     height: 10,
                                   ),
@@ -187,7 +189,7 @@ class _AppbarMsgState extends State<AppbarMsg> {
                                             dialogBuilder(
                                               context,
                                               text:
-                                                  'Do you want to block ${widget.name}?',
+                                                  '${TranslationConstants.you_want_block_msg.t(context)} ${widget.name}?',
                                               onTap: () async {
                                                 await FirebaseFirestore.instance
                                                     .collection('rooms')
@@ -199,13 +201,13 @@ class _AppbarMsgState extends State<AppbarMsg> {
                                               },
                                             );
                                           },
-                                          child: const Text('Block'))
+                                          child:  Text(TranslationConstants.block.t(context)))
                                       : InkWell(
                                           onTap: () {
                                             dialogBuilder(
                                               context,
                                               text:
-                                                  'Do you want to exit the group ${widget.name}?',
+                                                  '${TranslationConstants.you_want_exit_group_msg.t(context)} ${widget.name}?',
                                               onTap: () async {
                                                 await FirebaseFirestore.instance
   .collection('rooms')
@@ -221,7 +223,7 @@ class _AppbarMsgState extends State<AppbarMsg> {
                                               },
                                             );
                                           },
-                                          child: const Text('Exit Group'))
+                                          child:  Text(TranslationConstants.exitGroup.t(context)))
                                 ],
                               ),
                             )

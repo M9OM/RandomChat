@@ -8,7 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
 import '../animation/side_animatin_route.dart';
-import '../model/register_model.dart';
+import '../models/register_model.dart';
 import '../provider/providerauth.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;

@@ -1,9 +1,11 @@
+import 'package:chatme/constant/str_extntion.dart';
 import 'package:chatme/services/firebaseService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 
+import '../../constant/translate_constat.dart';
 import '../../provider/providerauth.dart';
 import 'textFiled/screachTextfiled.dart';
 
@@ -87,7 +89,7 @@ bool loading = false;
               const SizedBox(height: 100),
               Container(
                 padding: const EdgeInsets.all(10),
-                child: const Text('To: ',style: TextStyle(fontSize: 18),),),
+                child:  Text('${TranslationConstants.to.t(context)}: ',style: TextStyle(fontSize: 18),),),
               Container(
                 height: 120,
                 child: ListView.builder(
@@ -218,7 +220,7 @@ bool loading = false;
 
    final snackBar = SnackBar(
     backgroundColor: theme.cardColor,
-            content: Center(child:  Text('You should add more than 2 users',style: TextStyle(color: theme.iconTheme.color),)),
+            content: Center(child:  Text(TranslationConstants.you_should_add_more_than_2.t(context),style: TextStyle(color: theme.iconTheme.color),)),
             duration: const Duration(milliseconds: 1500),
             width: 280.0,
             padding:EdgeInsets.all(15),
@@ -232,7 +234,7 @@ bool loading = false;
 
    final snackBar = SnackBar(
     backgroundColor: theme.cardColor,
-            content: Center(child:  Text('You should write name for group',style: TextStyle(color: theme.iconTheme.color),)),
+            content: Center(child:  Text(TranslationConstants.you_should_write_name_for_group.t(context),style: TextStyle(color: theme.iconTheme.color),)),
             duration: const Duration(milliseconds: 1500),
             width: 280.0,
             padding:EdgeInsets.all(15),
@@ -255,7 +257,7 @@ bool loading = false;
                   color: theme.primaryColor,
                   child: Center(
                     child: Text(
-                      'Add Community',
+                      TranslationConstants.addComunity.t(context),
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                       ),

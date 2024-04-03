@@ -1,7 +1,10 @@
 import 'package:chatme/constant/assets_constants.dart';
+import 'package:chatme/constant/str_extntion.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+
+import '../../../constant/translate_constat.dart';
 
 class TextFiledSearch extends StatelessWidget {
   TextEditingController textController;
@@ -18,7 +21,7 @@ class TextFiledSearch extends StatelessWidget {
                             style: const TextStyle(
                                  fontFamily: 'Orbitron'),
                             decoration: InputDecoration(
-                              hintText: 'Name of Community',
+                              hintText: TranslationConstants.nameOfCommunity.t(context),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(20),
                                 borderSide: const BorderSide(

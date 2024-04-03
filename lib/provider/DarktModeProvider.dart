@@ -2,9 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DarktModeProvider with ChangeNotifier {
-  Locale get locale => _locale;
-
-  Locale _locale = const Locale('en', 'US');
+  String get locale => _locale;
+  String _locale = 'en';
 
   bool _isDarkMode = false;
 
@@ -18,12 +17,23 @@ class DarktModeProvider with ChangeNotifier {
 
   Future<void> loadDarkMode() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+        SharedPreferences prefslang = await SharedPreferences.getInstance();
+    _locale = prefslang.getString('lang')!;
+
     _isDarkMode = prefs.getBool('isDarkMode') ?? false;
     notifyListeners();
   }
 
-  void changeLanguage(Locale newLocale) {
+  void changeLanguage(String newLocale) async{
     _locale = newLocale;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('lang', newLocale);
+
     notifyListeners();
   }
+  //   Future<void> loadLang() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   _locale = prefs.getString('lang')!;
+  //   notifyListeners();
+  // }
 }

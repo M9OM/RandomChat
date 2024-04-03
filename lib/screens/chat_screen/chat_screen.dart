@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:chatme/constant/str_extntion.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lottie/lottie.dart';
 import 'package:audioplayers/audioplayers.dart';
+import '../../constant/translate_constat.dart';
 import '../../provider/providerauth.dart';
 import '../../ui/color.dart';
 import '/screens/chat_screen/widget/dilog.dart';
@@ -266,10 +268,10 @@ getUserDataa = preloadUserData();
                           child: TextField(
                             maxLines: 4,
                             minLines: 1,
-                            style: const TextStyle(fontFamily: 'Orbitron'),
+                            style: const TextStyle(),
                             controller: _textController,
                             decoration: InputDecoration(
-                              hintText: 'Type your message...',
+                              hintText: TranslationConstants.type_your_msg.t(context),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(20),
                                 borderSide: const BorderSide(
@@ -282,7 +284,7 @@ getUserDataa = preloadUserData();
                                   borderSide: BorderSide(
                                     color: theme.primaryColor,
                                   )),
-                              hintStyle: const TextStyle(fontFamily: 'Orbitron'),
+                              hintStyle: const TextStyle(),
                               filled: true,
                               fillColor: Colors.transparent,
                               border: OutlineInputBorder(

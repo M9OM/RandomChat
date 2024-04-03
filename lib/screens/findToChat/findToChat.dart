@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:chatme/constant/str_extntion.dart';
 import 'package:chatme/screens/chatList/chatList.dart';
 import 'package:chatme/screens/chat_screen/chat_screen.dart';
 import 'package:chatme/screens/findToChat/loading.dart';
@@ -10,6 +11,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lottie/lottie.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
+import '../../constant/translate_constat.dart';
 import '../../services/firebaseService.dart';
 import '../payment/payment.dart';
 
@@ -192,7 +194,7 @@ setState(() {
                         ),
                         child: Column(
                           children: [
-                            const Text('Start Chatting!'),
+                             Text(TranslationConstants.start_chating.t(context),),
                             Text('${tringTime}/5'),
                           ],
                         ),

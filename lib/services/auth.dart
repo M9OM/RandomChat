@@ -8,7 +8,7 @@ import '../provider/providerauth.dart';
 import '/screens/chatList/chatList.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../model/register_model.dart';
+import '../models/register_model.dart';
 
 
 class AuthService {
