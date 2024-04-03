@@ -1,9 +1,10 @@
 import 'package:chatme/setting/constant/card.dart';
+import 'package:chatme/setting/constant/detils_setting.dart';
 
-List<Card_Setting> cardList = [
+// List<Card_Setting> cardList = [
   
-  Card_Setting(admin:true,title:'', details:[]),
+//   Card_Setting(admin:true,title:'', details:[Details_SettingCard()]),
   
-  Card_Setting(admin:false,title:'Application', details: [], )
+//   Card_Setting(admin:false,title:'Application', details: [], )
   
-  ,Card_Setting(admin:false,title:'', details: [], )];
+//   ,Card_Setting(admin:false,title:'', details: [], )];

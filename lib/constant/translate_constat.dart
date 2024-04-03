@@ -3,6 +3,7 @@ class TranslationConstants {
   
     static const String darkMode = 'DarkMode';
     static const String notifiction = 'notifiction';
+    static const String application = 'application';
 
   static const String sign_up = 'sign_up';
   static const String online = 'online';

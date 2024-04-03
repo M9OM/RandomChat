@@ -9,11 +9,12 @@ import '../../constant/translate_constat.dart';
 import '../../provider/DarktModeProvider.dart';
 import '../constant/adminCard.dart';
 import '../language_change.dart';
+import 'detils_setting.dart';
 class Card_Setting extends StatelessWidget {
    Card_Setting({super.key, required this.title,required this.admin, required this.details});
 String title;
 bool admin;
-List <ListView> details;
+List <Details_SettingCard> details;
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
@@ -39,63 +40,7 @@ List <ListView> details;
               style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),
             ),
             Column(
-              children: [
-
-
-                
-                ListTile(
-                  leading: SvgPicture.asset(
-                    AssetsConstants.dark,
-                    width: 22,
-                    color: theme.iconTheme.color,
-                  ),
-                  title:  Text(
-                      TranslationConstants.darkMode.t(context),
-                    style: TextStyle(fontSize: 15),
-                  ),
-                  trailing: Switch(
-                    value: darktMode.isDarkMode,
-                    activeColor: theme.primaryColor,
-                    onChanged: (value) {
-                      darktMode.isDarkMode
-                          ? darktMode.toggleDarkMode(false)
-                          : darktMode.toggleDarkMode(true);
-                    },
-                  ),
-                ),
-
-                Container(decoration: BoxDecoration(border: Border.all(width: 1,color: theme.dividerColor)),),
-                ListTile(
-                    leading: SvgPicture.asset(
-                      AssetsConstants.notifictionIcon,
-                      width: 22,
-                      color: theme.iconTheme.color,
-                    ),
-                    title:  Text(
-                      TranslationConstants.notifiction.t(context),
-                      style: TextStyle(fontSize: 15),
-                    ),
-                    trailing: const Icon(Icons.arrow_forward_ios)),
-                                    Container(decoration: BoxDecoration(border: Border.all(width: 1,color: theme.dividerColor)),),
-
-                ListTile(
-                    leading: SvgPicture.asset(
-                      AssetsConstants.language,
-                      width: 22,
-                      color: theme.iconTheme.color,
-                    ),
-                    title:  Text(
-                      TranslationConstants.language.t(context),
-                      style: TextStyle(fontSize: 15),
-                    ),
-                    onTap: () {
-                      Navigator.push(context,MaterialPageRoute(builder: (context) => Language_Change(),));
-                    },
-                    subtitle: lang.locale =='en'? Text('(English)'):Text('(العربية)'),
-                    trailing: const Icon(Icons.arrow_forward_ios)),
-
-                    
-              ],
+              children: details
             )
           ],
         ),
