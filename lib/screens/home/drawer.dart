@@ -8,7 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../AboutUs/aboutUs_screen.dart';
 import '../../constant/translate_constat.dart';
-import '../../setting/setting_screen.dart';
+import '../setting/setting_screen.dart';
 
 class AdvancedDrawerShow extends StatelessWidget {
   AdvancedDrawerShow(
@@ -34,20 +34,20 @@ double _width = 1.5;
           const SizedBox(
             height: 70,
           ),
-          ListTile(
-            shape: Border(
-                bottom:
-                    BorderSide(width: _width, color: _colorWidth)),
-            leading: SvgPicture.asset(
-              AssetsConstants.user,
-              width: 30,
-              color: colorIcon,
-            ),
-            title:  Text(
-              TranslationConstants.profile.t(context),
+          // ListTile(
+          //   shape: Border(
+          //       bottom:
+          //           BorderSide(width: _width, color: _colorWidth)),
+          //   leading: SvgPicture.asset(
+          //     AssetsConstants.user,
+          //     width: 30,
+          //     color: colorIcon,
+          //   ),
+          //   title:  Text(
+          //     TranslationConstants.profile.t(context),
               
-            ),
-          ),
+          //   ),
+          // ),
 
           ListTile(
             onTap: () {

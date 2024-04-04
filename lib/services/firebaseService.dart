@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../screens/chat_screen/chat_screen.dart';
-
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
 // Send a message
@@ -138,3 +139,23 @@ Future<void> lastOnline(String userId) async {
   // Future<DocumentSnapshot<Map<String, dynamic>>>getListUserswheree(String uid) {
   //   return _firestore.collection('users').doc(uid).get();
   // }
+
+
+  Future sendEmail() async {
+    final Email email = Email(
+  body: 'Email body',
+  subject: 'Email subject',
+  recipients: ['sautma223@gmail.com'],
+  cc: ['cc@example.com'],
+  bcc: ['bcc@example.com'],
+  isHTML: false,
+);
+ try {
+      await FlutterEmailSender.send(email);
+      print('success') ;
+    } catch (error) {
+      print(error);
+            print(error.toString()) ;
+
+    }}
+  // Specify the recipient email address

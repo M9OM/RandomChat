@@ -5,9 +5,9 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
-import '../../constant/assets_constants.dart';
-import '../../constant/translate_constat.dart';
-import '../../provider/DarktModeProvider.dart';
+import '../../../constant/assets_constants.dart';
+import '../../../constant/translate_constat.dart';
+import '../../../provider/DarktModeProvider.dart';
 
 class Details_SettingCard extends StatelessWidget {
   Details_SettingCard(

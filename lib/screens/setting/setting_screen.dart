@@ -1,15 +1,21 @@
 import 'package:chatme/constant/assets_constants.dart';
 import 'package:chatme/constant/str_extntion.dart';
 import 'package:chatme/models/setting_models.dart';
-import 'package:chatme/setting/constant/detils_setting.dart';
+import 'package:chatme/provider/providerauth.dart';
+import 'package:chatme/screens/setting/constant/detils_setting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
-import '../constant/translate_constat.dart';
-import '../provider/DarktModeProvider.dart';
+import '../../services/firebaseService.dart';
+import '../../services/google_auth.dart';
+import '../../widgets/dilog.dart';
+import '../Account/Account_screen.dart';
+import '../../constant/translate_constat.dart';
+import '../../provider/DarktModeProvider.dart';
+import '../registration/register_screen.dart';
 import 'constant/adminCard.dart';
 import 'constant/card.dart';
 import 'language_change.dart';
@@ -21,6 +27,8 @@ class Settings_Screen extends StatelessWidget {
   Widget build(BuildContext context) {
     final lang = Provider.of<DarktModeProvider>(context);
     final darktMode = Provider.of<DarktModeProvider>(context);
+        final user = Provider.of<ModelsProvider>(context);
+
     var theme = Theme.of(context);
     return Scaffold(
       body: Center(
@@ -57,7 +65,7 @@ class Settings_Screen extends StatelessWidget {
                 Card_Setting(admin: true, title: '', details: []),
                 Card_Setting(
                   admin: false,
-                      title: TranslationConstants.application.t(context),
+                  title: TranslationConstants.application.t(context),
                   details: [
                     Details_SettingCard(
                       iSswitch: true,
@@ -92,8 +100,60 @@ class Settings_Screen extends StatelessWidget {
                 ),
                 Card_Setting(
                   admin: false,
-                  title: '',
-                  details: [],
+                  title: TranslationConstants.account.t(context),
+                  details: [
+                    Details_SettingCard(
+                      iSswitch: false,
+                      title: TranslationConstants.account_Info.t(context),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AccountScreen(),
+                            ));
+                      },
+                      iconSvg: AssetsConstants.user,
+                    ),
+                    Details_SettingCard(
+                      iSswitch: false,
+                      title: TranslationConstants.upgrade_account.t(context),
+                      onTap: () {
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //       builder: (context) => const Language_Change(),
+                        //     ));
+                      },
+                      iconSvg: AssetsConstants.gem,
+                    ),
+                    Details_SettingCard(
+                      iSswitch: false,
+                      title: TranslationConstants.disable_account.t(context),
+                      onTap: () {
+              sendEmail();
+
+            dialogBuilder(context, onTap: () async {
+              await AuthServices.signOut();
+              user.setCurrentModel('');
+              // ignore: use_build_context_synchronously
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const register_screen(),
+                ),
+                (Route<dynamic> route) =>
+                    false, // This predicate always returns false, so it will remove all routes
+              );
+              
+              
+              
+              }, text: TranslationConstants.disable_account_msg.t(context));
+
+
+                      },
+                      iconSvg: AssetsConstants.heartCrack,
+                    ),
+                  ],
                 )
               ],
             ),

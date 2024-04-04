@@ -1,4 +1,11 @@
 {
+    "interests": "interests",
+    "email": "Email",
+    "disable_account_msg": "Do you really want to disable your account? If you press yes, your account will be disabled after 30 days.",
+    "upgrade_account": "Upgrade Account",
+    "disable_account": "Disable Account",
+    "account": "Account",
+    "account_Info": "Account Information",
     "application": "Application",
     "sign_up": "Sign up",
     "DarkMode": "Dark Mode",

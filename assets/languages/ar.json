@@ -1,5 +1,13 @@
 {
 
+    "disable_account_msg": "هل تريد حقاً تعطيل حسابك؟ إذا ضغطت نعم، سيتم تعطيل حسابك بعد ٣٠ يومًا",
+
+    "account_Info": "معلومات الحساب",
+    "email": "البريد الإلكتروني",
+    "interests": "الاهتمامات",
+    "account": "الحساب",
+    "upgrade_account": "ترقية الحساب",
+    "disable_account": "تعطيل الحساب",
     "application": "التطبيق",
     "sign_up": "التسجيل",
     "addComunity": "اضافة مجتمع",

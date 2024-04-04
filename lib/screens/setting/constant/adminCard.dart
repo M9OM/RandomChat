@@ -5,8 +5,8 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:provider/provider.dart';
 
-import '../../provider/DarktModeProvider.dart';
-import '../../services/firebaseService.dart';
+import '../../../provider/DarktModeProvider.dart';
+import '../../../services/firebaseService.dart';
 
 class AdminCard extends StatefulWidget {
   const AdminCard({super.key});

@@ -1,5 +1,5 @@
-import 'package:chatme/setting/constant/card.dart';
-import 'package:chatme/setting/constant/detils_setting.dart';
+import 'package:chatme/screens/setting/constant/card.dart';
+import 'package:chatme/screens/setting/constant/detils_setting.dart';
 
 // List<Card_Setting> cardList = [
   

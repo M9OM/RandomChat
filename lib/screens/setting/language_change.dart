@@ -4,8 +4,8 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:provider/provider.dart';
 
-import '../constant/translate_constat.dart';
-import '../provider/DarktModeProvider.dart';
+import '../../constant/translate_constat.dart';
+import '../../provider/DarktModeProvider.dart';
 
 class Language_Change extends StatelessWidget {
   const Language_Change({super.key});
@@ -13,7 +13,6 @@ class Language_Change extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final lang = Provider.of<DarktModeProvider>(context);
-
     var theme = Theme.of(context);
     return Scaffold(
       body: Column(
@@ -76,10 +75,7 @@ class Language_Change extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: theme.primaryColor, shape: BoxShape.circle),
                   child: lang.locale == 'en'
-                      ? Icon(
-                          Icons.done,
-                          color: Colors.white
-                        )
+                      ? Icon(Icons.done, color: Colors.white)
                       : SizedBox()),
             ),
           ),

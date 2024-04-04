@@ -4,6 +4,16 @@ class TranslationConstants {
     static const String darkMode = 'DarkMode';
     static const String notifiction = 'notifiction';
     static const String application = 'application';
+        static const String upgrade_account = 'upgrade_account';
+
+        static const String disable_account = 'disable_account';
+                static const String account = 'account';
+                static const String account_Info = 'account_Info';
+                static const String interests = 'interests';
+
+                 static const String disable_account_msg = 'disable_account_msg';
+              
+                static const String email = 'email';
 
   static const String sign_up = 'sign_up';
   static const String online = 'online';
