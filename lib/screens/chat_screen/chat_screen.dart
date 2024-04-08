@@ -192,7 +192,7 @@ getUserDataa = preloadUserData();
                         return Text('Error: ${snapshot.error}');
                       }
                       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                        return const Center(child: Text('No messages'));
+                        return  Center(child: Text(TranslationConstants.noMassge.t(context)));
                       }
       
                       var messages = snapshot.data!.docs;
@@ -317,7 +317,7 @@ getUserDataa = preloadUserData();
                                       child: Image.asset(
                                         'assets/images/send.png',
                                         width: 25,
-                                        color: theme.iconTheme.color,
+                                        color: theme.scaffoldBackgroundColor,
                                       ),
                                     ),
                                   )):SizedBox()

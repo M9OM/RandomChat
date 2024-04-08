@@ -1,9 +1,6 @@
 import 'package:chatme/constant/str_extntion.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:provider/provider.dart';
-
 import '../../constant/translate_constat.dart';
 import '../../provider/DarktModeProvider.dart';
 
@@ -12,38 +9,20 @@ class Language_Change extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lang = Provider.of<DarktModeProvider>(context);
+    final lang = Provider.of<DataProvider>(context);
     var theme = Theme.of(context);
     return Scaffold(
+      appBar: AppBar(title:  Text(
+                      TranslationConstants.language.t(context),
+                    )),
       body: Column(
         children: [
-          Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Column(children: [
-                    const SizedBox(height: 40),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Icon(Icons.arrow_back_ios),
-                        ),
-                      ],
-                    ),
-                    Center(
-                        child: Text(
-                      TranslationConstants.language.t(context),
-                      style: TextStyle(fontSize: 18),
-                    ))
-                  ]))),
+
           ListTile(
-            leading: Text('العربية'),
+            leading: Text(
+              'العربية',
+              style: TextStyle(fontWeight: FontWeight.bold,fontSize: theme.textTheme.bodyMedium!.fontSize),
+            ),
             trailing: InkWell(
               onTap: () {
                 lang.changeLanguage('ar');
@@ -57,13 +36,14 @@ class Language_Change extends StatelessWidget {
                   child: lang.locale == 'ar'
                       ? Icon(
                           Icons.done,
-                          color: Colors.white,
+                          color: theme.scaffoldBackgroundColor,
                         )
                       : SizedBox()),
             ),
           ),
           ListTile(
-            leading: Text('English'),
+            leading: Text('English', style: TextStyle(fontWeight: FontWeight.bold,fontSize: theme.textTheme.bodyMedium!.fontSize),
+),
             trailing: InkWell(
               onTap: () {
                 lang.changeLanguage('en');
@@ -75,7 +55,7 @@ class Language_Change extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: theme.primaryColor, shape: BoxShape.circle),
                   child: lang.locale == 'en'
-                      ? Icon(Icons.done, color: Colors.white)
+                      ? Icon(Icons.done, color: theme.scaffoldBackgroundColor)
                       : SizedBox()),
             ),
           ),

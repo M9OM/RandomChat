@@ -5,10 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../provider/providerauth.dart';
-import '/screens/chatList/chatList.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../models/register_model.dart';
 
 
 class AuthService {

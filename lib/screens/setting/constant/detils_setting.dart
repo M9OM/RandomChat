@@ -24,8 +24,8 @@ String iconSvg;
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-    final lang = Provider.of<DarktModeProvider>(context);
-    final darktMode = Provider.of<DarktModeProvider>(context);
+    final lang = Provider.of<DataProvider>(context);
+    final darktMode = Provider.of<DataProvider>(context);
 
     return Container(
       decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1,color: theme.dividerColor))),

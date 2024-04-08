@@ -1,12 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import '../../constant/assets_constants.dart';
-import '../../provider/providerauth.dart';
-import '../../services/auth.dart';
 import '../../services/google_auth.dart';
 import '../../widgets/bouttonWithIcon copy.dart';
 class register_screen extends StatefulWidget {
@@ -27,7 +23,6 @@ class _register_screenState extends State<register_screen> {
   @override
   Widget build(BuildContext context) {
         final theme = Theme.of(context);
-    final providerAuth = Provider.of<ModelsProvider>(context, listen: true);
 
     return ModalProgressHUD(
       inAsyncCall: loging,

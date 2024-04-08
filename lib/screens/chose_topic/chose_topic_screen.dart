@@ -1,13 +1,11 @@
 import 'package:chatme/screens/ChangeScreens.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:provider/provider.dart';
-
 import '../../animation/side_animatin_route.dart';
 import '../../provider/providerauth.dart';
 
+// ignore: camel_case_types
 class ChoseTopic_screen extends StatefulWidget {
   const ChoseTopic_screen({super.key});
 

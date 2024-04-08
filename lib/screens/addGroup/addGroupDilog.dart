@@ -34,7 +34,7 @@ class _AddGroupDialogState extends State<AddGroupDialog> {
     QuerySnapshot<Object?> querySnapshot = await rooms
         .orderBy('timestamp', descending: true)
         .where('userId', arrayContainsAny: [user.usersId, user.usersId])
-        .limit(20)
+        .limit(5)
         .get();
 
     // Process each document in the collection
@@ -49,14 +49,13 @@ class _AddGroupDialogState extends State<AddGroupDialog> {
           doc['userId'][0] == user.usersId ? doc['userId'][1] : doc['userId'][0]
         });
       });
-
     }
-            getListOfUsers = getListUserswhere(docId);
+    getListOfUsers = getListUserswhere(docId);
 
     // Print the list of docIds
     print('Document IDs: $docId');
-  } 
-  
+  }
+
   late Stream<QuerySnapshot> getListOfUsers;
 
   @override
@@ -65,7 +64,8 @@ class _AddGroupDialogState extends State<AddGroupDialog> {
     getDocId();
     getListOfUsers = getListUserswhere(docId);
   }
-bool loading = false;
+
+  bool loading = false;
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -73,8 +73,9 @@ bool loading = false;
 
     return ModalProgressHUD(
       inAsyncCall: loading,
-      progressIndicator:CircularProgressIndicator(),
+      progressIndicator: CircularProgressIndicator(),
       child: Scaffold(
+        appBar: AppBar(),
         body: GestureDetector(
           onTap: () {
             FocusScopeNode currentFocus = FocusScope.of(context);
@@ -83,19 +84,22 @@ bool loading = false;
             }
           },
           child: Column(
-         crossAxisAlignment : CrossAxisAlignment.start,
-    
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 100),
               Container(
                 padding: const EdgeInsets.all(10),
-                child:  Text('${TranslationConstants.to.t(context)}: ',style: TextStyle(fontSize: 18),),),
+                child: Text(
+                  '${TranslationConstants.to.t(context)}: ',
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
               Container(
-                height: 120,
+                height: 130,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: communityIdList.length,
                   itemBuilder: (context, index) {
+                   int lenName= communityIdList[index]['name'].toString().length;
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
@@ -112,10 +116,10 @@ bool loading = false;
                                 communityIdList[index]['photoURL'].toString(),
                               ),
                             ),
-
-                            SizedBox(height: 5,),
-
-                            Text(communityIdList[index]['name'].toString())
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text('${communityIdList[index]['name'].toString().substring(0,lenName>20? 19 : lenName)}' )
                           ],
                         ),
                       ),
@@ -125,9 +129,9 @@ bool loading = false;
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Container(
+                child: SizedBox(
                   height: 80,
-                  child:  TextFiledSearch(textController:_textController),
+                  child: TextFiledSearch(textController: _textController),
                 ),
               ),
               Expanded(
@@ -145,18 +149,18 @@ bool loading = false;
                         var uid = user.id;
                         var photoURL = user['photoURL'];
                         var displayName = user['displayName'];
-    
+
                         return InkWell(
                           onTap: () {
                             setState(() {
-                              if (communityIdList.any((element) =>
-                                  element['uid'] == uid)) {
-                                communityIdList.removeWhere((element) =>
-                                    element['uid'] == uid);
+                              if (communityIdList
+                                  .any((element) => element['uid'] == uid)) {
+                                communityIdList.removeWhere(
+                                    (element) => element['uid'] == uid);
                               } else {
                                 communityIdList.add({
                                   'uid': uid,
-                                  'name':displayName,
+                                  'name': displayName,
                                   'photoURL': photoURL,
                                 });
                               }
@@ -174,21 +178,26 @@ bool loading = false;
                                 backgroundColor: Colors.transparent,
                               ),
                               title: Text(displayName),
-                              trailing: communityIdList.any((element) =>
-                                      element['uid'] == uid)
+                              trailing: communityIdList
+                                      .any((element) => element['uid'] == uid)
                                   ? Container(
-                                                                      width: 30,
-                                    height: 30,
-    
-                                    padding:const EdgeInsets.all(2) ,
-                                    decoration: BoxDecoration(color: theme.primaryColor, shape: BoxShape.circle),
-                                    child: const Icon(Icons.done,))
+                                      width: 30,
+                                      height: 30,
+                                      padding: const EdgeInsets.all(2),
+                                      decoration: BoxDecoration(
+                                          color: theme.primaryColor,
+                                          shape: BoxShape.circle),
+                                      child: const Icon(
+                                        Icons.done,
+                                      ))
                                   : Container(
-                                    width: 30,
-                                    height: 30,
-                                    padding:const EdgeInsets.all(2) ,
-                                    decoration: BoxDecoration(color: theme.primaryColor, shape: BoxShape.circle),
-                                ),
+                                      width: 30,
+                                      height: 30,
+                                      padding: const EdgeInsets.all(2),
+                                      decoration: BoxDecoration(
+                                          color: theme.primaryColor,
+                                          shape: BoxShape.circle),
+                                    ),
                             ),
                           ),
                         );
@@ -198,60 +207,65 @@ bool loading = false;
                 ),
               ),
               InkWell(
-                                  onTap: ()async {
-              print(communityIdList.map((map) => map['uid'].toString()).toList());
-             
-        
+                onTap: () async {
+                  print(communityIdList
+                      .map((map) => map['uid'].toString())
+                      .toList());
 
+                  if (communityIdList.length > 2 &&
+                      _textController.text.isNotEmpty) {
+                    setState(() {
+                      loading = true;
+                    });
 
-             if(communityIdList.length>2&&_textController.text.isNotEmpty){
-     setState(() {
-               loading = true;
-             });
-
-  await  createGroup(user.usersId,DateTime.now().toString(),communityIdList.map((map) => map['uid'].toString()).toList(), _textController.text,context);
+                    await createGroup(
+                        user.usersId,
+                        DateTime.now().toString(),
+                        communityIdList
+                            .map((map) => map['uid'].toString())
+                            .toList(),
+                        _textController.text,
+                        context);
                     _textController.clear();
-                   setState(() {
-                                                   loading = false;
-
-             });   
-
-             }else if(communityIdList.length<2){
-
-   final snackBar = SnackBar(
-    backgroundColor: theme.cardColor,
-            content: Center(child:  Text(TranslationConstants.you_should_add_more_than_2.t(context),style: TextStyle(color: theme.iconTheme.color),)),
-            duration: const Duration(milliseconds: 1500),
-            width: 280.0,
-            padding:EdgeInsets.all(15),
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ));
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-             } else if(_textController.text.isEmpty){
-
-   final snackBar = SnackBar(
-    backgroundColor: theme.cardColor,
-            content: Center(child:  Text(TranslationConstants.you_should_write_name_for_group.t(context),style: TextStyle(color: theme.iconTheme.color),)),
-            duration: const Duration(milliseconds: 1500),
-            width: 280.0,
-            padding:EdgeInsets.all(15),
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ));
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-
-             }
-          
-    
-                    },
-    
-    
-    
+                    setState(() {
+                      loading = false;
+                    });
+                  } else if (communityIdList.length < 2) {
+                    final snackBar = SnackBar(
+                        backgroundColor: theme.cardColor,
+                        content: Center(
+                            child: Text(
+                          TranslationConstants.you_should_add_more_than_2
+                              .t(context),
+                          style: TextStyle(color: theme.iconTheme.color),
+                        )),
+                        duration: const Duration(milliseconds: 1500),
+                        width: 280.0,
+                        padding: EdgeInsets.all(15),
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ));
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  } else if (_textController.text.isEmpty) {
+                    final snackBar = SnackBar(
+                        backgroundColor: theme.cardColor,
+                        content: Center(
+                            child: Text(
+                          TranslationConstants.you_should_write_name_for_group
+                              .t(context),
+                          style: TextStyle(color: theme.iconTheme.color),
+                        )),
+                        duration: const Duration(milliseconds: 1500),
+                        width: 280.0,
+                        padding: EdgeInsets.all(15),
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ));
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
+                },
                 child: Container(
                   padding: const EdgeInsets.all(30),
                   color: theme.primaryColor,

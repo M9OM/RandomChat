@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 import '../../services/firebaseService.dart';
 import '../../services/google_auth.dart';
 import '../../widgets/dilog.dart';
-import '../Account/Account_screen.dart';
+import '../Account/AccountInfo_screen.dart';
 import '../../constant/translate_constat.dart';
 import '../../provider/DarktModeProvider.dart';
 import '../registration/register_screen.dart';
@@ -25,9 +25,9 @@ class Settings_Screen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lang = Provider.of<DarktModeProvider>(context);
-    final darktMode = Provider.of<DarktModeProvider>(context);
-        final user = Provider.of<ModelsProvider>(context);
+    final lang = Provider.of<DataProvider>(context);
+    final darktMode = Provider.of<DataProvider>(context);
+    final user = Provider.of<ModelsProvider>(context);
 
     var theme = Theme.of(context);
     return Scaffold(
@@ -130,26 +130,23 @@ class Settings_Screen extends StatelessWidget {
                       iSswitch: false,
                       title: TranslationConstants.disable_account.t(context),
                       onTap: () {
-              sendEmail();
+                        sendEmail();
 
-            dialogBuilder(context, onTap: () async {
-              await AuthServices.signOut();
-              user.setCurrentModel('');
-              // ignore: use_build_context_synchronously
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const register_screen(),
-                ),
-                (Route<dynamic> route) =>
-                    false, // This predicate always returns false, so it will remove all routes
-              );
-              
-              
-              
-              }, text: TranslationConstants.disable_account_msg.t(context));
-
-
+                        dialogBuilder(context, onTap: () async {
+                          await AuthServices.signOut();
+                          user.setCurrentModel('');
+                          // ignore: use_build_context_synchronously
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const register_screen(),
+                            ),
+                            (Route<dynamic> route) =>
+                                false, // This predicate always returns false, so it will remove all routes
+                          );
+                        },
+                            text: TranslationConstants.disable_account_msg
+                                .t(context));
                       },
                       iconSvg: AssetsConstants.heartCrack,
                     ),

@@ -5,9 +5,9 @@ import '../provider/providerauth.dart';
 
 ThemeData lightMode = ThemeData(
     brightness: Brightness.light, // Ensures dark mode
+  dividerColor: LightMode().dividerColor,
 
     fontFamily: 'eg_ar',
-    selectedRowColor: LightMode().highlightColor,
     primarySwatch: Colors.purple,
     iconTheme: IconThemeData(color: LightMode().iconColor),
     bottomNavigationBarTheme:
@@ -28,10 +28,10 @@ ThemeData lightMode = ThemeData(
     ));
 
 ThemeData darkMode = ThemeData(
+  dividerColor: DarktMode().dividerColor,
     brightness: Brightness.dark, // Ensures dark mode
     fontFamily: 'eg_ar',
     primarySwatch: Colors.purple,
-    selectedRowColor: DarktMode().highlightColor,
     iconTheme: IconThemeData(color: DarktMode().iconColor),
     bottomNavigationBarTheme:
         BottomNavigationBarThemeData(backgroundColor: DarktMode().bottomColor),
@@ -49,8 +49,9 @@ ThemeData darkMode = ThemeData(
     ));
 
 class DarktMode {
-  Color highlightColor = Color.fromARGB(255, 160, 115, 236);
-  Color mainColor = Color.fromRGBO(143, 47, 253, 1);
+  Color dividerColor = const Color.fromARGB(255, 51, 51, 51);
+  Color highlightColor = Color.fromRGBO(200, 152, 255, 1);
+  Color mainColor = Color.fromRGBO(200, 152, 255, 1);
   Color iconColor = const Color.fromARGB(255, 213, 213, 213);
   Color backgroundColor = Colors.black;
   Color cardBackground = const Color.fromARGB(255, 38, 38, 38);
@@ -61,6 +62,7 @@ class DarktMode {
 }
 
 class LightMode {
+  Color dividerColor = Color.fromARGB(255, 203, 203, 203);
   Color highlightColor = Color.fromARGB(255, 160, 115, 236);
   Color mainColor = Color.fromRGBO(183, 119, 255, 1);
   Color iconColor = Colors.black;

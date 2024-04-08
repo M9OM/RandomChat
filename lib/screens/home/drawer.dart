@@ -2,7 +2,6 @@ import 'package:chatme/constant/assets_constants.dart';
 import 'package:chatme/constant/str_extntion.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -10,6 +9,7 @@ import '../../AboutUs/aboutUs_screen.dart';
 import '../../constant/translate_constat.dart';
 import '../setting/setting_screen.dart';
 
+// ignore: must_be_immutable
 class AdvancedDrawerShow extends StatelessWidget {
   AdvancedDrawerShow(
       {super.key,

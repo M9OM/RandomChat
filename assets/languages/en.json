@@ -1,4 +1,8 @@
 {
+    "upgrade": "Upgrade",
+    "upgrade_msg_title": "Upgrade your account now!",
+    "upgrade_msg_subtitle": "Get more friends and chat with up to 200 people. Upgrade your account now.",
+
     "interests": "interests",
     "email": "Email",
     "disable_account_msg": "Do you really want to disable your account? If you press yes, your account will be disabled after 30 days.",

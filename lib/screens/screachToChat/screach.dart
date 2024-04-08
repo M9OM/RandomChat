@@ -1,11 +1,8 @@
-import 'package:chatme/provider/providerauth.dart';
 import 'package:chatme/screens/chatList/chatList.dart';
 import 'package:chatme/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:provider/provider.dart';
-import '/screens/chat_screen/chat_screen.dart';
 import '/services/firebaseService.dart';
 
 class UserToChat extends StatefulWidget {

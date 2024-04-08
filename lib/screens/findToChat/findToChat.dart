@@ -194,8 +194,8 @@ setState(() {
                         ),
                         child: Column(
                           children: [
-                             Text(TranslationConstants.start_chating.t(context),),
-                            Text('${tringTime}/5'),
+                             Text(TranslationConstants.start_chating.t(context),style: TextStyle(color: theme.scaffoldBackgroundColor)),
+                            Text('${tringTime}/5',style: TextStyle(color: theme.scaffoldBackgroundColor),),
                           ],
                         ),
                       ),

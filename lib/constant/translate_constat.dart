@@ -1,6 +1,9 @@
 class TranslationConstants {
   TranslationConstants._();
-  
+  static const String upgrade = "upgrade";
+    static const String upgrade_msg_title = "upgrade_msg_title";
+  static const String upgrade_msg_subtitle = "upgrade_msg_subtitle";
+
     static const String darkMode = 'DarkMode';
     static const String notifiction = 'notifiction';
     static const String application = 'application';

@@ -19,8 +19,8 @@ List <Details_SettingCard> details;
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     double screenWidth = MediaQuery.of(context).size.width;
-    final darktMode = Provider.of<DarktModeProvider>(context);
-    final lang = Provider.of<DarktModeProvider>(context);
+    final darktMode = Provider.of<DataProvider>(context);
+    final lang = Provider.of<DataProvider>(context);
 
     return admin? AdminCard():Padding(
       padding: const EdgeInsets.all(8.0),

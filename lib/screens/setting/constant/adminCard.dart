@@ -30,6 +30,7 @@ class _AdminCardState extends State<AdminCard> {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     double screenWidth = MediaQuery.of(context).size.width;
+    final adminData = Provider.of<DataProvider>(context);
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -47,53 +48,17 @@ class _AdminCardState extends State<AdminCard> {
 
             Column(
               children: [
-                FutureBuilder<DocumentSnapshot>(
-                    future: getAdminData,
-                    builder:
-                        (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return ListTile(
+                       ListTile(
                         leading: CircleAvatar(
+                          backgroundImage: NetworkImage(adminData.avatarUrl),
                         ),
                         title: Text(
-                          '...',
+                          adminData.name,
                           style: TextStyle(fontSize: 15),
                         ),
-                        subtitle: Text('@'),
-                      ); // Or any other loading indicator
-                      } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      } else if (!snapshot.hasData ||
-                          snapshot.data!.data() == null) {
-                        return const Text(
-                            'No admin data available'); // Or handle the case when data is not available
-                      }
-
-                      var adminData = snapshot.data!.data()! as Map<String,
-                          dynamic>; // Explicitly cast to Map<String, dynamic>
-                      var photoURL = adminData[
-                          'photoURL']; // Assuming 'photoURL' is the key in the admin data map
-                      var name = adminData['displayName'];
-                      var email = adminData[
-                          'email']; // Assuming 'photoURL' is the key in the admin data map
-
-                      // Assuming 'photoURL' is the key in the admin data map
-
-                      return ListTile(
-                        leading: CircleAvatar(
-                          backgroundImage: NetworkImage(photoURL),
-                        ),
-                        title: Text(
-                          name,
-                          style: TextStyle(fontSize: 15),
-                        ),
-                        subtitle: Text(email),
-                      );
-                    }),
-              ],
-            )
-          ],
-        ),
+                        subtitle: Text(adminData.email),
+                      )])])
+                    
       ),
     );
   }

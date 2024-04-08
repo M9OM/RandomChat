@@ -96,13 +96,14 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final user = Provider.of<ModelsProvider>(context);
     final theme = Theme.of(context);
-    final darktMode = Provider.of<DarktModeProvider>(context);
-    final lang = Provider.of<DarktModeProvider>(context);
+    final darktMode = Provider.of<DataProvider>(context);
+    final lang = Provider.of<DataProvider>(context);
+    final dataProvider = Provider.of<DataProvider>(context);
 
     return Scaffold(
       key: _scaffoldKey,
       drawer: Drawer(
-        backgroundColor: theme.scaffoldBackgroundColor,
+        backgroundColor: theme.cardColor,
         child: AdvancedDrawerShow(
           isDark: darktMode.isDarkMode,
           darkModeTap: () {
@@ -155,33 +156,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    FutureBuilder<DocumentSnapshot>(
-                        future: getAdminData,
-                        builder: (context,
-                            AsyncSnapshot<DocumentSnapshot> snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const CircularProgressIndicator(); // Or any other loading indicator
-                          } else if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          } else if (!snapshot.hasData ||
-                              snapshot.data!.data() == null) {
-                            return const Text(
-                                'No admin data available'); // Or handle the case when data is not available
-                          }
-
-                          var adminData = snapshot.data!.data()! as Map<String,
-                              dynamic>; // Explicitly cast to Map<String, dynamic>
-                          var photoURL = adminData[
-                              'photoURL']; // Assuming 'photoURL' is the key in the admin data map
-                          var name = adminData[
-                              'displayName']; // Assuming 'photoURL' is the key in the admin data map
-
-                          return Row(
+Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               CircleAvatar(
-                                backgroundImage: NetworkImage(photoURL),
+                                backgroundImage: NetworkImage(dataProvider.avatarUrl),
                                 radius: 25,
                               ),
                               const SizedBox(
@@ -197,13 +176,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                     style: const TextStyle(
                                         fontSize: 16, color: Colors.grey),
                                   ),
-                                  Text(name.toString(),
+                                  Text(dataProvider.name.toString(),
                                       style: const TextStyle(fontSize: 20))
                                 ],
                               ),
                             ],
-                          );
-                        }),
+                          ),
                     Row(
                       children: [
                         InkWell(

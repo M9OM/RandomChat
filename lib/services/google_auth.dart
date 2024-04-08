@@ -1,3 +1,4 @@
+import 'package:chatme/provider/DarktModeProvider.dart';
 import 'package:chatme/screens/ChangeScreens.dart';
 import 'package:chatme/screens/profileSetup/profile_bio_setup.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,6 +11,7 @@ import 'package:provider/provider.dart';
 import '../animation/side_animatin_route.dart';
 import '../models/register_model.dart';
 import '../provider/providerauth.dart';
+import 'firebaseService.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -19,6 +21,7 @@ class AuthServices {
     bool logding = false;
     logding = true;
     final users = Provider.of<ModelsProvider>(context, listen: false);
+    final dataAmin = Provider.of<DataProvider>(context, listen: false);
 
     Future<bool> isEmailAvailable(String? email) async {
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
@@ -86,7 +89,26 @@ class AuthServices {
           firestore.collection('users');
       Map<String, dynamic> registerData = register.toFirestore();
       await registerCollection.doc(user.uid).set(registerData);
-
+             getUserData(user!.uid).then((documentSnapshot) {
+                    if (documentSnapshot.exists) {
+                      // Extract admin data
+                      Map<String, dynamic>? adminData = documentSnapshot.data();
+                      String? avatarUrl = adminData?['photoURL'];
+                      String? name = adminData?['displayName'];
+                      String? email = adminData?['email'];
+                      List<dynamic>? interest = adminData?['interest'];
+                      print(interest);
+                      print(email);
+                      // Check for null values before passing data to the provider method
+                      if (avatarUrl != null &&
+                          name != null &&
+                          email != null &&
+                          interest != null) {
+                        dataAmin.userInfoAdmin(
+                            avatarUrl, name, email, interest.cast<String>());
+                      }
+                    }
+                  });
       Navigator.pushReplacement(
         context,
         SlideAnimationRoute(
@@ -95,7 +117,26 @@ class AuthServices {
       );
     } else {
       users.setCurrentModel(userIDD!);
-
+                  getUserData(user!.uid).then((documentSnapshot) {
+                    if (documentSnapshot.exists) {
+                      // Extract admin data
+                      Map<String, dynamic>? adminData = documentSnapshot.data();
+                      String? avatarUrl = adminData?['photoURL'];
+                      String? name = adminData?['displayName'];
+                      String? email = adminData?['email'];
+                      List<dynamic>? interest = adminData?['interest'];
+                      print(interest);
+                      print(email);
+                      // Check for null values before passing data to the provider method
+                      if (avatarUrl != null &&
+                          name != null &&
+                          email != null &&
+                          interest != null) {
+                        dataAmin.userInfoAdmin(
+                            avatarUrl, name, email, interest.cast<String>());
+                      }
+                    }
+                  });
       Navigator.pushReplacement(
         context,
         SlideAnimationRoute(

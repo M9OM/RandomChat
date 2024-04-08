@@ -5,8 +5,8 @@ import 'package:chatme/screens/chatList/chatList.dart';
 import 'package:chatme/screens/findToChat/findToChat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import '../constant/assets_constants.dart';
-import '../ui/color.dart';
 import 'home/homeScreen.dart';
 
 class ChangeScreen extends StatefulWidget {
@@ -34,8 +34,7 @@ class _sreens_of_botoomBarState extends State<ChangeScreen> {
       bottomNavigationBar: bottomNavigationBarWidget(
           currentIndex: currentIndex,
           indextChange: (index) {
-                                    HapticFeedback.mediumImpact();
-
+          HapticFeedback.mediumImpact();
             setState(() => currentIndex = index);
           }),
       body: IndexedStack(
@@ -57,7 +56,7 @@ class bottomNavigationBarWidget extends StatelessWidget {
     // Get the current index from the widget's properties
 
     // Define the colors for the selected and unselected icons
-    Color? selectedItemColor = Theme.of(context).selectedRowColor;
+    Color? selectedItemColor = Theme.of(context).primaryColor;
     Color? unSelectedItemColor = Theme.of(context).disabledColor;
 
     return Container(
@@ -74,7 +73,7 @@ class bottomNavigationBarWidget extends StatelessWidget {
           onTap: (index) {
             indextChange(index);
           },
-          items: [
+          items:[
             BottomNavigationBarItem(
                 icon: currentIndex == 0
                     // selected item

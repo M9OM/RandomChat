@@ -89,7 +89,7 @@ Stream<QuerySnapshot> getMessages(String roomId) {
 Stream<QuerySnapshot> getListUsersChat(String uid, String uid2) {
   return _firestore
       .collection('rooms')
-      .orderBy('timestamp', descending: true)
+      .orderBy('timestamp', descending: true).limit(5)
       .where('userId', arrayContainsAny: [uid]).snapshots();
 }
 void getListUsersChatt(String uid, String uid2) {

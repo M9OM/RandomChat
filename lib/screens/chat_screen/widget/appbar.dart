@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:chatme/constant/assets_constants.dart';
 import 'package:chatme/constant/str_extntion.dart';
 import 'package:chatme/services/firebaseService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../../constant/translate_constat.dart';
@@ -69,7 +71,7 @@ class _AppbarMsgState extends State<AppbarMsg> {
                       onTap: () {
                         Navigator.pop(context);
                       },
-                      child: const Icon(Icons.arrow_back),
+                      child: const Icon(Icons.arrow_back_ios),
                     ),
                     const SizedBox(width: 20),
                     widget.membres!.isEmpty
@@ -108,9 +110,15 @@ class _AppbarMsgState extends State<AppbarMsg> {
                     const SizedBox(width: 10),
                     Column(
                       children: [
-                        Text(
-                          widget.name,
-                          style: const TextStyle(fontSize: 17),
+                        Row(
+                          children: [
+                            Text(
+                              widget.name,
+                              style: const TextStyle(fontSize: 17),
+                            ),
+                            SizedBox(width: 5,),
+                            // SvgPicture.asset(AssetsConstants.va,color: Colors.blue,width: 14,)
+                          ],
                         ),
                         widget.membres!.isEmpty
                             ? StreamBuilder<DocumentSnapshot>(
@@ -166,22 +174,23 @@ class _AppbarMsgState extends State<AppbarMsg> {
                       showDialog<void>(
                         context: context,
                         builder: (BuildContext context) {
-                          final theme = Theme.of(context);
-                          double fontSize = 20;
 
-                          return AlertDialog(actions: <Widget>[
+                          return AlertDialog(
+                            
+                            actions: <Widget>[
                             Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
                                   InkWell(onTap: () {}, child:  Text(TranslationConstants.hobbies.t(context))),
                                   const SizedBox(
-                                    height: 10,
+                                    height: 5,
                                   ),
                                   InkWell(onTap: () {}, child:  Text(TranslationConstants.theme.t(context))),
                                   const SizedBox(
-                                    height: 10,
+                                    height: 5,
                                   ),
                                   widget.membres!.isEmpty
                                       ? InkWell(
